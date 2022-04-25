@@ -1,0 +1,46 @@
+{% include 'header.html' %}
+{% block content %}
+
+<div class="container">
+    <h2>Available Results</h2>
+    {% if results %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Quiz</th>
+                <th>User</th>
+                <th>Candidate Id</th>
+                <th>Result</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in results %}
+            <tr>
+                <form method="post" action="{% url 'view_results' uname %}">
+                    {% csrf_token %}
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ item.quiz_id }} <input type="hidden" name="qid" value="{{ item.quiz_id.id }}"></td>
+                    <td>{{ item.user_id }} <input type="hidden" name="uid" value="{{ item.user_id.id }}"></td>
+                    <td>{{ item.candidate_id }}</td>
+                    <td>
+                        <input type="submit" class="btn btn-success btn-sm" value="View">&nbsp;&nbsp;&nbsp;&nbsp;
+                        <a id="delete" href="{% url 'delete_result' item.id uname %}" class="btn btn-danger btn-sm"
+                            title="Delete Result"
+                            onclick="return confirm('Are you sure ? This action can`t be undone !')"><i
+                                class="bi bi-trash3"></i></a>
+                    </td>
+                </form>
+                <p id="item_id" style="display: none;">{{ item.id }}</p>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <br>
+    <p>No results available. &nbsp;:(</p>
+    {% endif %}
+</div>
+
+{% endblock %}
+{% include 'footer.html' %}

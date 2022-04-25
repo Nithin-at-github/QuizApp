@@ -1,0 +1,66 @@
+{% include 'header.html' %}
+{% block content %}
+
+<div class="container">
+    <h2 align="center">User Feedbacks</h2>
+    <br>
+    <div class="row">
+        {% if feedbacks %}
+        {% for item in feedbacks %}
+        {% if forloop.counter|divisibleby:2 == 0 %}
+        <div class="w-100"></div><br>
+        {% endif %}
+        <div class="col-sm">
+            {% if item.status == 'edited' %}
+            <h4>{{ item.user_name }}<p style="font-size: 12px; float: right;">{{ item.date }}&nbsp;&nbsp;&nbsp;</p>
+            </h4>
+            <p style="font-size: 15px;">( edited )</p>
+            {% else %}
+            <h4>{{ item.user_name }}<p style="font-size: 12px; float: right;">{{ item.date }}&nbsp;&nbsp;&nbsp;</p>
+            </h4>
+            {% endif %}
+            <p>{{ item.feedback }}</p>
+            <br>
+            {% if feed_id == item.id %}
+            <form method="post" action="{% url 'view_feedbacks' uname %}">
+                {% csrf_token %}
+                <input type="hidden" name="id" value="{{ item.id }}">
+                <input type="hidden" name="user_id" value="{{ item.user_id.id }}">
+                <input type="hidden" name="reply_status" value="edited">
+                <input type="hidden" name="date" value="{{ item.date }}">
+                <textarea class="form-control" type="text" name="reply">{{ item.reply }}</textarea>
+                <br><input type="submit" name="update_reply" class="btn btn-primary btn-sm" value="Update">
+            </form>
+            {% else %}
+            {% if item.reply %}
+            <p><b>Replied.</b>&nbsp;&nbsp;&nbsp;
+            <form method="post" action="{% url 'view_feedbacks' uname %}">
+                {% csrf_token %}
+                <input type="hidden" name="id" value="{{ item.id }}">
+                <button type="submit" name="edit_reply" class="btn btn-primary btn-sm" title="Edit your reply.">
+                    <i class="bi bi-pencil-square"></i>
+                </button>
+            </form>
+            </p>
+            {% else %}
+            <form method="post" action="{% url 'view_feedbacks' uname %}">
+                {% csrf_token %}
+                <input type="hidden" name="date" value="{{ item.date }}">
+                <input type="hidden" name="user_id" value="{{ item.user_id.id }}">
+                <input type="hidden" name="feed_id" value="{{ item.id }}">
+                <textarea class="form-control" type="text" name="reply" placeholder="Enter your reply"
+                    required></textarea><br>
+                <input class="btn btn-success" type="submit" name="submit" value="Reply">
+            </form>
+            {% endif %}
+            {% endif %}
+        </div>
+        {% endfor %}
+        {% else %}
+        <p>No Feedbacks till now :(</p>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}
+{% include 'footer.html' %}

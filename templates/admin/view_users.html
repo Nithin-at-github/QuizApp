@@ -1,0 +1,36 @@
+{% include 'header.html' %}
+
+{% block content %}
+<div class="container">
+    <h4>Users Registered so far.!</h4>
+    {% if all %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Full Name</th>
+                <th>Email id</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in all %}
+            <tr>
+                <th>{{ forloop.counter }}</th>
+                <td>{{ item.fname }} {{ item.lname }}</td>
+                <td>{{ item.email }}</td>
+                <td><a href="{% url 'delete_user' item.id uname %}" class="btn btn-danger btn-sm" title="Delete User"
+                        onclick="return confirm('Are you sure ? This action can`t be undone !')"><i
+                            class="bi bi-trash3"></i></a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <br>
+    <p>No users registered so far &nbsp;:(</p>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% include 'footer.html' %}

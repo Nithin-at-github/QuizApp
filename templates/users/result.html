@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Result</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <style>
+        h2 {
+            font-size: 25px;
+        }
+
+        h4 {
+            font-size: 20px;
+        }
+
+        h5 {
+            font-size: 18px;
+            font-family: Arial, bold;
+        }
+
+        .table {
+            /* border-collapse: collapse; */
+            width: 100%;
+            border: 1px solid;
+            font-size: 18px;
+            font-family: Arial, bold;
+        }
+
+        .scorecard {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        #copyright {
+            margin-top: 50px;
+            font-size: 18px;
+            color: grey;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="card">
+            <br>
+            <h2 align="center">QUIZ APP</h2>
+            <br>
+            <h4 align="center">Result of {{ title }} Quiz dated {{ qdate }}</h4>
+            <br>
+            <h5>
+                <table>
+                    <tr>
+                        <th style="padding: 8px; text-align: left;">Candidate Id : {{ candidate_id }}</th>
+                        <th style="padding: 8px; text-align: right;">Date : {{ date }}
+                        </th>
+                    </tr>
+                    <tr>
+                        <th style="padding: 8px; text-align: left;">Name : {{ name }}</th>
+                    </tr>
+                </table>
+                <!-- <p align="right">Date : {{ date }}</p>
+                    Candidate Id : {{ candidate_id }}<br><br>
+                    Name : {{ name }} <br> -->
+            </h5>
+            <table class="table" border="1">
+                <tbody>
+                    <tr>
+                        <td class="scorecard" style="width: 70%;">Total No of Questions</td>
+                        <td class="scorecard" style="text-align: center;">{{ tot_questions }}</td>
+                    </tr>
+                    <tr>
+                        <td class="scorecard" style="width: 70%;">No of Correct Answers</td>
+                        <td class="scorecard" style="text-align: center;">{{ correct_answers }}</td>
+                    </tr>
+                    <tr>
+                        <td class="scorecard" style="width: 70%;">No of Wrong Answers</td>
+                        <td class="scorecard" style="text-align: center;">{{ wrong_answers }}</td>
+                    </tr>
+                    <tr>
+                        <td class="scorecard" style="width: 70%;">Marks Obtained</td>
+                        <td class="scorecard" style="text-align: center;">{{ score }}</td>
+                    </tr>
+                    <tr>
+                        <td class="scorecard" style="width: 70%;">Maximum Marks</td>
+                        <td class="scorecard" style="text-align: center;">{{ max_mark }}.0</td>
+                    </tr>
+                    <tr>
+                        <td class="scorecard" style="width: 70%;">Grade Obtained</td>
+                        <td class="scorecard" style="text-align: center;">{{ grade }}</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th class="scorecard" style="width: 70%;">Final Result</th>
+                        {% if grade == 'E' %}
+                        <th class="scorecard" style="color: red; text-align: center;">Failed</th>
+                        {% else %}
+                        <th class="scorecard" style="color: green; text-align: center;">Passed</th>
+                        {% endif %}
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        <div id="copyright">
+            <span class="text-muted">&copy; {{ current_year }} &nbsp;QUIZ APP</span>
+        </div>
+    </div>
+</body>
+
+</html>

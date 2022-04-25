@@ -1,0 +1,47 @@
+{% include 'header.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>Hello {{ fname }}, </h2>
+    <br>
+    <h3>Available Quizzes</h3><br>
+    <div>
+        {% if quizzes %}
+        <table class="table table-borderless">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Title</th>
+                    <th>Total Questions</th>
+                    <th>Time Alloted</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in quizzes %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ item.title }}</td>
+                    <td>{{ item.tot_questions }}</td>
+                    <td>{{ item.max_time }} min</td>
+
+                    {% if user in item.attendees.all %}
+                    <td> Already attended. </td>
+                    {% else %}
+                    <td>
+                        <a class="btn btn-success btn-sm" href="{% url 'instructions' user_id item.id %}">Attempt</a>
+                    </td>
+                    {% endif %}
+
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No Quizzes available at this time : (</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% include 'footer.html' %}

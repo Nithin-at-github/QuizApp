@@ -1,0 +1,68 @@
+{% include 'header.html' %}
+{% block content %}
+
+<div class="container">
+    <center>
+        <h2>General Instructions</h2>
+        <br>
+        <table class="table table-borderless">
+            <tr>
+                <td colspan="2">
+                    1.&nbsp;&nbsp; This Quiz will contain a total of {{ quiz.tot_questions }} questions. Each question
+                    will be given {{ quiz.mark_for_correct }} mark for correct answer and {{ quiz.mark_for_wrong }} mark
+                    for wrong answers.
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    2.&nbsp;&nbsp; A maximum of {{ quiz.max_time }} min is allowed for this quiz, which is equally
+                    divided for each questions. Which means you have to submit the answer within the
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;allowed time for that question.
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    3.&nbsp;&nbsp; The questions will come one at a time and when you submit the answer or when the time
+                    expires, you will be redirected to next question.
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    4.&nbsp;&nbsp; The answer once submitted cannot be changed. You cannot go back to previous question.
+                    So, cross check your answer before submitting.
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    5.&nbsp;&nbsp; DO NOT TRY TO REFRESH THE PAGE. This will be considered as a malpractice and the
+                    question will be skipped immediately.
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    6.&nbsp;&nbsp; After the quiz is finished, we'll mail you the results to your registered email id.
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    7.&nbsp;&nbsp; Good Luck. You can start the quiz by clicking the Start Quiz button below.
+                </td>
+            </tr>
+        </table>
+        <br><br>
+        <a class="btn btn-success" href="" onclick="Confirm()">Start Quiz</a>
+        <br>
+    </center>
+</div>
+<script type="text/javascript">
+    function Confirm() {
+        var val = confirm('Are you sure ? You can only go back after finishing quiz.');
+        if (val == true) {
+            window.open("http://{{ domain }}{% url 'attempt' user_id=user_id quiz_id=quiz_id %}");
+        } else {
+            return false;
+        }
+    }
+</script>
+{% endblock %}
+{% include 'footer.html' %}

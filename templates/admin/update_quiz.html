@@ -1,0 +1,48 @@
+{% include 'header.html' %}
+
+{% block content %}
+<div class="container">
+    <form class="row g-3" method="post" action="{% url 'update_quiz' id uname %}">
+        {% csrf_token %}
+        <h2>Update Quiz</h2>
+        <div class="col-12">
+            <label class="form-label">Title</label>
+            <input type="text" class="form-control" name="title" placeholder="Enter quiz title" value="{{ quiz.title }}"
+                required>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Total Questions</label>
+            <input type="number" class="form-control" name="tot_questions" placeholder="Enter total number of questions"
+                value="{{ quiz.tot_questions }}" required>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Maximum Time Alloted</label>
+            <input type="number" class="form-control" name="max_time"
+                placeholder="Enter maximun time alloted ( in minutes )" value="{{ quiz.max_time }}" required>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Mark for Correct Answers</label>
+            <input type="number" class="form-control" name="mark_for_correct"
+                placeholder="Enter mark for correct answers" value="{{ quiz.mark_for_correct }}" required>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Mark for Wrong Answers</label>
+            <input type="number" class="form-control" name="mark_for_wrong" placeholder="Enter mark for wrong answers"
+                value="{{ quiz.mark_for_wrong }}" required>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Maximum Mark</label>
+            <input type="number" class="form-control" name="max_mark" placeholder="Enter maximun mark"
+                value="{{ quiz.max_mark }}" required>
+        </div>
+        <input type="hidden" name="date_added" value="{{ date }}">
+        <div class="col-12">
+            <center>
+                <button class="btn btn-primary" type="submit" name="update">Update</button>
+            </center>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% include 'footer.html' %}

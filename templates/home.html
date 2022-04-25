@@ -1,0 +1,153 @@
+{% load static %}
+{% include 'header.html' %}
+
+{% block content %}
+<style>
+    .divider:after,
+    .divider:before {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: #eee;
+    }
+
+    .h-custom {
+        height: calc(100% - 73px);
+    }
+
+    @media (max-width: 450px) {
+        .h-custom {
+            height: 100%;
+        }
+    }
+</style>
+
+<section id="home">
+    <h2 align="center">Welcome to Quiz App</h2>
+    <div class="container-fluid h-custom">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col-md-9 col-lg-6 col-xl-5">
+                <img src="{% static 'img/logo.webp' %}" class="img-fluid" alt="Sample image">
+            </div>
+            <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+                <form method="post" action="{% url 'home' %}">
+                    {% csrf_token %}
+                    <div class="divider d-flex align-items-center my-4">
+                        <p class="text-center fw-bold mx-3 mb-0">LOGIN</p>
+                    </div>
+
+                    <!-- Email input -->
+                    <div class="form-outline mb-4">
+                        <input type="text" id="form3Example3" name="uname" class="form-control form-control-lg"
+                            placeholder="Enter your username" required />
+                        <label class="form-label" for="form3Example3">Username</label>
+                    </div>
+
+                    <!-- Password input -->
+                    <div class="form-outline mb-3">
+                        <input type="password" id="form3Example4" name="password" class="form-control form-control-lg"
+                            placeholder="Enter password" required />
+                        <label class="form-label" for="form3Example4">Password</label>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <a href="{% url 'forgot_password' %}" class="text-body">Forgot password ?</a>
+                    </div>
+
+                    <div class="text-center text-lg-start mt-4 pt-2">
+                        <button type="submit" class="btn btn-primary btn-lg" name="login"
+                            style="padding-left: 2.5rem; padding-right: 2.5rem;">Login</button>
+                        <p class="small fw-bold mt-2 pt-1 mb-0">Don't have an account? <a href="{% url 'signup' %}"
+                                class="link-danger"> Register</a></p>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="feedbacks">
+    <br><br><br>
+    <h2 align="center">User Feedbacks</h2>
+    <br>
+    <div class="container">
+        <div class="row">
+            {% if feedbacks %}
+            {% for item in feedbacks %}
+            {% if forloop.counter|divisibleby:2 == 0 %}
+            <div class="w-100"></div><br>
+            {% endif %}
+            {% if forloop.counter > 4 %}
+            <div>
+                <p><a href="{% url 'feedbacks' %}"><b>See more</b></a></p>
+            </div>
+            {{ break }}
+            {% else %}
+            <div class="col-sm">
+                {% if item.status == 'edited' %}
+                <h4>{{ item.user_name }}<p style="font-size: 12px; float: right;">{{ item.date }}&nbsp;&nbsp;&nbsp;</p>
+                </h4>
+                <p style="font-size: 15px;">( edited )</p>
+                {% else %}
+                <h4>{{ item.user_name }}<p style="font-size: 12px; float: right;">{{ item.date }}&nbsp;&nbsp;&nbsp;</p>
+                </h4>
+                {% endif %}
+                <p>{{ item.feedback }}</p>
+                {% if item.reply %}
+                <div id="reply" style="margin-left: 50px;">
+                    {% if item.reply_status == 'edited' %}
+                    <h6><i class="fa fa-reply" aria-hidden="true"></i> Admin ( edited )</h6>
+                    {% else %}
+                    <h6><i class="fa fa-reply" aria-hidden="true"></i> Admin</h6>
+                    {% endif %}
+                    <p>{{ item.reply }}</p>
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+            {% endfor %}
+            {% else %}
+            <p>No Feedbacks till now :(</p>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<section id="contact" class="section-bg">
+    <div class="container" style="align-items: center;">
+        <br>
+        <h2 align="center">Contact Us</h2>
+        <br>
+        <div class="row">
+            <div class="col">
+                <div class="d-flex justify-content-center">
+                    <i class="fa fa-map-marker fa-3x mb-3" aria-hidden="true"></i>
+                </div>
+                <div class="d-flex justify-content-center">
+                    <p>Kottayam, Kerala 686019, India</p>
+                </div>
+            </div>
+            <div class="col">
+                <div class="d-flex justify-content-center">
+                    <i class="fa fa-phone fa-3x mb-3" aria-hidden="true"></i>
+                </div>
+                <div class="d-flex justify-content-center">
+                    <p><a href="tel:+155895548855">+91 8547433566</a></p>
+                </div>
+            </div>
+            <div class="col">
+                <div class="d-flex justify-content-center">
+                    <i class="fa fa-envelope fa-3x mb-3" aria-hidden="true"></i>
+                </div>
+                <div class="d-flex justify-content-center">
+                    <p><a href="mailto:nithinjk2810@gmail.com">nithinjk2810@gmail.com</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+{% include 'footer.html' %}

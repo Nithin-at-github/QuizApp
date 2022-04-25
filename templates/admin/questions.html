@@ -1,0 +1,52 @@
+{% include 'header.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="form group">
+                <h3>Add Questions</h3>
+                <form class="row g-3" method="post" action="{% url 'add_update_questions' id uname %}">
+                    {% csrf_token %}
+                    {{ formset }}
+                    <br><br>
+                    <button class="btn btn-success" type="submit" name="add">Add Question</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% include 'footer.html' %}
+
+
+<!-- <h2>Add Questions</h2>
+    {% for i in tot %}
+    <label>Question {{ i }}</label>
+    <textarea rows="3" cols="50" name="question{{ i }}" placeholder="Enter question {{ i }}" required></textarea><br>
+    <label>Option 1</label>
+    <input type="text" name="question{{ i }}option1" placeholder="Enter option 1" required><br>
+    <label>Option 2</label>
+    <input type="text" name="question{{ i }}option2" placeholder="Enter option 2" required><br>
+    <label>Option 3</label>
+    <input type="text" name="question{{ i }}option3" placeholder="Enter option 3" required><br>
+    <label>Option 4</label>
+    <input type="text" name="question{{ i }}option4" placeholder="Enter option 4" required><br>
+    <br>
+    <label>Correct Option</label>
+    <select name="question{{ i }}answer" required>
+        <option value="">Select</option>
+        <option value="question{{ i }}option1">Option 1</option>
+        <option value="question{{ i }}option2">Option 2</option>
+        <option value="question{{ i }}option3">Option 3</option>
+        <option value="question{{ i }}option4">Option 4</option>
+    </select>
+    &nbsp;&nbsp;
+    <label>Mark for correct answer </label>
+    <input type="number" name="question{{ i }}mark_correct" placeholder="Enter mark of correct answer" required>
+    &nbsp;&nbsp;
+    <label>Mark for wrong answer </label>
+    <input type="number" name="question{{ i }}mark_wrong" placeholder="Enter mark of wrong answer" required>
+    <br><br>
+    {% endfor %} -->

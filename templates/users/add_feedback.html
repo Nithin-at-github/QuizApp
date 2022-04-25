@@ -1,0 +1,38 @@
+{% include 'header.html' %}
+
+{% block content %}
+
+<div class="container">
+    {% if rtype == 'auto' %}
+    <h2>Thank you {{ fullname }} for attending the quiz.</h2>
+    <br>
+    <h5>Please provide us a feedback about the quiz you just completed. You can also indicate your views on this
+        website as a whole. We are always open for suggestions.</h5>
+    {% else %}
+    <h2>Add Feedback</h2>
+    {% endif %}
+    <br>
+    <form method="post" action="{% url 'add_feedback' user_id %}">
+        {% csrf_token %}
+        <input type="hidden" name="user_id" value="{{ uid }}">
+        <input type="hidden" name="user_name" value="{{ fullname }}">
+        <div class="form-outline mb-4">
+            <textarea class="form-control" rows="8" cols="50" name="feedback" id="feedbackform"
+                placeholder="Enter your feedback here." required></textarea>
+            <label class="form-label" for="feedbackform">Feedback</label>
+        </div>
+        <input type="hidden" name="date" value="{{ date }}">
+        <div class="text-center text-lg-start mt-4 pt-2">
+            <button type="submit" class="btn btn-primary" name="login"
+                style="padding-left: 2.5rem; padding-right: 2.5rem;">Submit
+            </button>&nbsp;&nbsp;
+            {% if rtype != 'auto' %}
+            <a class="btn btn-success" href="{% url 'user_view_feedbacks' user_id %}">View Submitions</a>
+            {% endif %}
+        </div>
+    </form>
+</div>
+
+{% endblock %}
+
+{% include 'footer.html' %}

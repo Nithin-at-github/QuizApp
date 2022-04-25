@@ -1,0 +1,10 @@
+{% autoescape off %}
+Hello {{ user }},
+
+The result of the quiz you recently attended is ready with us, and the same is stored as a pdf file.
+
+You can view and download your result by clicking the following link.
+
+Result link : http://{{ domain }}{% url 'generate_result' user_id=uid quiz_id=qid token=token %}
+
+{% endautoescape %}
