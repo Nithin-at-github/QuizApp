@@ -4,6 +4,7 @@ from .models import Quizzes
 from .models import Questions
 from .models import Feedbacks
 from .models import Results
+from .models import Notifications
 
 # Register your models here.
 
@@ -12,3 +13,4 @@ admin.site.register(Quizzes)
 admin.site.register(Questions)
 admin.site.register(Feedbacks)
 admin.site.register(Results)
+admin.site.register(Notifications)

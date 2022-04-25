@@ -32,6 +32,7 @@ urlpatterns = [
     path('instructions/<user_id>/<quiz_id>/', users_views.instructions, name='instructions'),
     path('attempt/<user_id>/<quiz_id>/', users_views.attempt, name='attempt'),
     path('add_feedback/<user_id>/type/', users_views.add_feedback, name='add_feedback'),
+    path('reply_notify/<user_id>/', users_views.reply_notify, name='reply_notify'),
     path('user_view_feedbacks/<user_id>/', users_views.user_view_feedbacks, name='user_view_feedbacks'),
     path('update_feedback/<user_id>/<feed_id>/', users_views.update_feedback, name='update_feedback'),
     path('delete_feedback/<user_id>/<feed_id>/', users_views.delete_feedback, name='delete_feedback'),
@@ -40,12 +41,15 @@ urlpatterns = [
     
     path('admin_dashboard/<name>/', admin_views.admin_dashboard, name='admin_dashboard'),
     path('add_quiz/<name>/', admin_views.add_quiz, name='add_quiz'),
+    path('result_notify/<name>/', admin_views.result_notify, name='result_notify'),
     path('view_results/<name>/', admin_views.view_results, name='view_results'),
     path('delete_result/<id>/<name>/', admin_views.delete_result, name='delete_result'),
     path('add_update_questions/<int:qid>/<name>/', admin_views.add_update_questions, name='add_update_questions'),
     path('delete_quiz/<id>/<name>/', admin_views.delete_quiz, name='delete_quiz'),
     path('update_quiz/<id>/<name>/', admin_views.update_quiz, name='update_quiz'),
+    path('user_notify/<name>/', admin_views.user_notify, name='user_notify'),
     path('view_users/<name>/', admin_views.view_users, name='view_users'),
+    path('feed_notify/<name>/', admin_views.feed_notify, name='feed_notify'),
     path('view_feedbacks/<name>/', admin_views.view_feedbacks, name='view_feedbacks'),
     path('delete_user/<id>/<name>/', admin_views.delete_user, name='delete_user'),
 ]

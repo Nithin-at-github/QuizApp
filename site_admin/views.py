@@ -1,6 +1,6 @@
 from quizapp import settings
 from users import views
-from users.models import Users, Quizzes, Questions, Results, Feedbacks
+from users.models import Users, Quizzes, Questions, Results, Feedbacks, Notifications
 from users.tokens import generate_token
 from .forms import AddQuizForm, AddFeedbackReply, UpdateFeedbackReply
 
@@ -26,8 +26,19 @@ def admin_dashboard(request, name):
     current_user = User.objects.get(pk=request.user.id)
     if current_user.is_superuser == True:
         role = 'admin'
+        notification = Notifications.objects.filter(to=role, status=1)
+        feedcount = 0
+        resultcount = 0
+        usercount = 0
+        for item in notification:
+            if item.subject == 'feedback':
+                feedcount += 1
+            elif item.subject == 'result':
+                resultcount += 1
+            elif item.subject == 'new_user':
+                usercount += 1
         all_quizzes = Quizzes.objects.all
-        return render(request, 'admin/admin_dashboard.html', {'role':role, 'current_year': current_year, 'all': all_quizzes, 'uname':name,})
+        return render(request, 'admin/admin_dashboard.html', {'role':role, 'feedcount':feedcount, 'resultcount':resultcount, 'usercount':usercount, 'current_year': current_year, 'all': all_quizzes, 'uname':name,})
     else:
         return redirect('home')
 
@@ -36,6 +47,17 @@ def add_quiz(request, name):
     current_user = User.objects.get(pk=request.user.id)
     if current_user.is_superuser == True:
         role = 'admin'
+        notification = Notifications.objects.filter(to=role, status=1)
+        feedcount = 0
+        resultcount = 0
+        usercount = 0
+        for item in notification:
+            if item.subject == 'feedback':
+                feedcount += 1
+            elif item.subject == 'result':
+                resultcount += 1
+            elif item.subject == 'new_user':
+                usercount += 1
         date = datetime.now().strftime('%Y-%m-%d')
         if request.method == 'POST':
             quizform = AddQuizForm(request.POST or None)
@@ -44,9 +66,14 @@ def add_quiz(request, name):
                 messages.success(request, "Quiz added sucessfully.")
                 return redirect('admin_dashboard', name)
         else:
-            return render(request, 'admin/add_quiz.html', {'role':role, 'current_year': current_year, 'date': date, 'uname': name})
+            return render(request, 'admin/add_quiz.html', {'role':role, 'feedcount':feedcount, 'resultcount':resultcount, 'usercount':usercount, 'current_year': current_year, 'date': date, 'uname': name})
     else:
         return redirect('home')
+
+@login_required(login_url='home')
+def result_notify(request, name):
+    Notifications.objects.filter(to='admin', subject='result', status=1).update(status=0)
+    return redirect('view_results', name)
 
 @login_required(login_url='home')
 def view_results(request, name):
@@ -62,8 +89,19 @@ def view_results(request, name):
             return redirect('generate_result', user_id, quiz_id, token)
         else:
             role = 'admin'
+            notification = Notifications.objects.filter(to=role, status=1)
+            feedcount = 0
+            resultcount = 0
+            usercount = 0
+            for item in notification:
+                if item.subject == 'feedback':
+                    feedcount += 1
+                elif item.subject == 'result':
+                    resultcount += 1
+                elif item.subject == 'new_user':
+                    usercount += 1
             results = Results.objects.all
-            return render(request, 'admin/view_results.html', {'role':role, 'current_year': current_year, 'uname':name, 'results':results,})
+            return render(request, 'admin/view_results.html', {'role':role, 'feedcount':feedcount, 'resultcount':resultcount, 'usercount':usercount, 'current_year': current_year, 'uname':name, 'results':results,})
     else:
         return redirect('home')
 
@@ -89,6 +127,17 @@ def add_update_questions(request, qid, name):
     current_user = User.objects.get(pk=request.user.id)
     if current_user.is_superuser == True:
         role = 'admin'
+        notification = Notifications.objects.filter(to=role, status=1)
+        feedcount = 0
+        resultcount = 0
+        usercount = 0
+        for item in notification:
+            if item.subject == 'feedback':
+                feedcount += 1
+            elif item.subject == 'result':
+                resultcount += 1
+            elif item.subject == 'new_user':
+                usercount += 1
         global question_count
         quiz = Quizzes.objects.get(pk=qid)
         tot = quiz.tot_questions
@@ -106,7 +155,7 @@ def add_update_questions(request, qid, name):
                     return redirect('add_update_questions', qid=quiz.id, name=name)
         
         formset = QuestionFormset(instance=quiz)
-        return render(request, 'admin/questions.html', {'role':role, 'current_year': current_year, 'id':int(qid), 'uname':name, 'formset':formset, 'count':question_count+1})
+        return render(request, 'admin/questions.html', {'role':role, 'feedcount':feedcount, 'resultcount':resultcount, 'usercount':usercount, 'current_year': current_year, 'id':int(qid), 'uname':name, 'formset':formset, 'count':question_count+1})
     else:
         return redirect('home')
 
@@ -126,6 +175,17 @@ def update_quiz(request, id, name):
     current_user = User.objects.get(pk=request.user.id)
     if current_user.is_superuser == True:
         role = 'admin'
+        notification = Notifications.objects.filter(to=role, status=1)
+        feedcount = 0
+        resultcount = 0
+        usercount = 0
+        for item in notification:
+            if item.subject == 'feedback':
+                feedcount += 1
+            elif item.subject == 'result':
+                resultcount += 1
+            elif item.subject == 'new_user':
+                usercount += 1
         date = datetime.now().strftime('%Y-%m-%d')
         if request.method == 'POST':
             instance = get_object_or_404(Quizzes, id=id)
@@ -136,17 +196,33 @@ def update_quiz(request, id, name):
                 return redirect('admin_dashboard', name)
         else:
             quiz = Quizzes.objects.get(pk=id)
-            return render(request, 'admin/update_quiz.html', {'role':role, 'current_year': current_year, 'date': date, 'uname': name, 'quiz':quiz, 'id':id})
+            return render(request, 'admin/update_quiz.html', {'role':role, 'feedcount':feedcount, 'resultcount':resultcount, 'usercount':usercount, 'current_year': current_year, 'date': date, 'uname': name, 'quiz':quiz, 'id':id})
     else:
         return redirect('home')
+
+@login_required(login_url='home')
+def user_notify(request, name):
+    Notifications.objects.filter(to='admin', subject='new_user', status=1).update(status=0)
+    return redirect('view_users', name)
 
 @login_required(login_url='home')
 def view_users(request, name):
     current_user = User.objects.get(pk=request.user.id)
     if current_user.is_superuser == True:
         role = 'admin'
+        notification = Notifications.objects.filter(to=role, status=1)
+        feedcount = 0
+        resultcount = 0
+        usercount = 0
+        for item in notification:
+            if item.subject == 'feedback':
+                feedcount += 1
+            elif item.subject == 'result':
+                resultcount += 1
+            elif item.subject == 'new_user':
+                usercount += 1
         all_users = Users.objects.all
-        return render(request, 'admin/view_users.html', {'role':role, 'current_year': current_year, 'all': all_users, 'uname':name})
+        return render(request, 'admin/view_users.html', {'role':role, 'feedcount':feedcount, 'resultcount':resultcount, 'usercount':usercount, 'current_year': current_year, 'all': all_users, 'uname':name})
     else:
         return redirect('home')
 
@@ -154,7 +230,6 @@ def view_users(request, name):
 def delete_user(request, id, name):
     current_user = User.objects.get(pk=request.user.id)
     if current_user.is_superuser == True:
-        role = 'admin'
         user = Users.objects.get(pk=id)
         auth_user = User.objects.get(email=user.email)
         user.delete()
@@ -165,10 +240,26 @@ def delete_user(request, id, name):
         return redirect('home')
 
 @login_required(login_url='home')
+def feed_notify(request, name):
+    Notifications.objects.filter(to='admin', subject='feedback', status=1).update(status=0)
+    return redirect('view_feedbacks', name)
+
+@login_required(login_url='home')
 def view_feedbacks(request, name):
     current_user = User.objects.get(pk=request.user.id)
     if current_user.is_superuser == True:
         role = 'admin'
+        notification = Notifications.objects.filter(to=role, status=1)
+        feedcount = 0
+        resultcount = 0
+        usercount = 0
+        for item in notification:
+            if item.subject == 'feedback':
+                feedcount += 1
+            elif item.subject == 'result':
+                resultcount += 1
+            elif item.subject == 'new_user':
+                usercount += 1
         feedbacks = Feedbacks.objects.all
         if request.method == 'POST':
             if 'update_reply' in request.POST:
@@ -179,6 +270,8 @@ def view_feedbacks(request, name):
                 update_reply_form = UpdateFeedbackReply(request.POST or None, instance=instance)
                 if update_reply_form.is_valid():
                     update_reply_form.save()
+                    notify = Notifications(to=request.POST['user_id'], subject='reply', status=1)
+                    notify.save()
                     # Revised reply Mail
                     subject = "Reply for Revised Feedback"
                     message = "Hello " + user.fname + " !! \n" + "This is the reply for your feedback dated "+ date +".\n\n"+ reply +".\n\nRegards,\nQUIZ APP Administrator"
@@ -193,7 +286,7 @@ def view_feedbacks(request, name):
             elif 'edit_reply' in request.POST:
                 feed_id = int(request.POST['id'])
                 mode = 'edit'
-                return render(request, 'admin/view_feedbacks.html', {'role':role, 'current_year': current_year, 'uname':name, 'feedbacks': feedbacks, 'feed_id':feed_id, 'mode':mode,})
+                return render(request, 'admin/view_feedbacks.html', {'role':role, 'feedcount':feedcount, 'resultcount':resultcount, 'usercount':usercount, 'current_year': current_year, 'uname':name, 'feedbacks': feedbacks, 'feed_id':feed_id, 'mode':mode,})
             else:
                 user = Users.objects.get(pk=request.POST['user_id'])
                 date = request.POST['date']
@@ -203,6 +296,8 @@ def view_feedbacks(request, name):
                 replyform = AddFeedbackReply(request.POST or None, instance=instance)
                 if replyform.is_valid():
                     replyform.save()
+                    notify = Notifications(to=request.POST['user_id'], subject='reply', status=1)
+                    notify.save()
                     # Reply Mail
                     subject = "Reply for Feedback"
                     message = "Hello " + user.fname + " !! \n" + "This is the reply for your feedback dated "+ date +".\n\n"+ reply +".\n\nRegards,\nQUIZ APP Administrator"
@@ -214,6 +309,6 @@ def view_feedbacks(request, name):
                 else:
                     messages.error(request, "Some error")
                     return redirect('view_feedbacks', name)
-        return render(request, 'admin/view_feedbacks.html', {'role':role, 'current_year': current_year, 'uname':name, 'feedbacks': feedbacks,})
+        return render(request, 'admin/view_feedbacks.html', {'role':role, 'feedcount':feedcount, 'resultcount':resultcount, 'usercount':usercount, 'current_year': current_year, 'uname':name, 'feedbacks': feedbacks,})
     else:
         return redirect('home')

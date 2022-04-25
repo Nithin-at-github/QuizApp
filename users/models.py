@@ -80,3 +80,11 @@ class Feedbacks(models.Model):
     
     class Meta:
         ordering = ('-date',)
+
+class Notifications(models.Model):
+    to = models.CharField('To', max_length=10)
+    subject = models.CharField('Subject', max_length=50)
+    status = models.IntegerField()
+
+    def __str__(self):
+        return self.subject

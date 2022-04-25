@@ -20,6 +20,31 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/loader.css' %}">
 
     <title>Quiz App</title>
+    <style>
+        .notification {
+            position: relative;
+            display: flex;
+        }
+
+        .notification-badge {
+            /* position: absolute; */
+            top: -15px;
+            right: -1px;
+            color: red;
+            -webkit-animation: shake .1s ease-in-out .1s infinite alternate;
+        }
+
+        @-webkit-keyframes shake {
+            from {
+                -webkit-transform: rotate(15deg);
+            }
+
+            to {
+                -webkit-transform: rotate(-15deg);
+                -webkit-transform-origin: center center;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -47,19 +72,33 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'view_results' uname %}">
-                            View Results
+                        <a class="nav-link" href="{% url 'result_notify' uname %}">
+                            <span class="notification">
+                                View Results
+                                {% if resultcount %}
+                                <span class="notification-badge"><b>&nbsp;{{ resultcount }}</b></span>
+                                {% endif %}
+                            </span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'view_users' uname %}">
-                            View Users
+                        <a class="nav-link" href="{% url 'user_notify' uname %}">
+                            <span class="notification">
+                                View Users
+                                {% if usercount %}
+                                <span class="notification-badge"><b>&nbsp;{{ usercount }}</b></span>
+                                {% endif %}
+                            </span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'view_feedbacks' uname %}">
-                            <span data-feather="file-text"></span>
-                            User Feedbacks
+                        <a class="nav-link" href="{% url 'feed_notify' uname %}">
+                            <span class="notification">
+                                User Feedbacks
+                                {% if feedcount %}
+                                <span class="notification-badge"><b>&nbsp;{{ feedcount }}</b></span>
+                                {% endif %}
+                            </span>
                         </a>
                     </li>
                     <li class="nav-item">
@@ -83,6 +122,14 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'add_feedback' user_id %}"> Add Feedback</a>
+                </li>
+                <li class="nav-item">
+                    <span class="notification">
+                        <a class="nav-link" href="{% url 'reply_notify' user_id %}"> My Feedbacks</a>
+                        {% if replycount %}
+                        <span class="notification-badge"><b>&nbsp;{{ replycount }}</b></span>
+                        {% endif %}
+                    </span>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'signout' %}">Logout</a>
