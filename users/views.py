@@ -395,6 +395,46 @@ def delete_feedback(request, user_id, feed_id):
     messages.success(request, "Feedback deleted successfully.")
     return redirect('user_view_feedbacks', user_id)
 
+@login_required(login_url='home')
+def user_view_results(request, user_id):
+    role = 'user'
+    uid = force_str(urlsafe_base64_decode(user_id))
+    user = Users.objects.get(pk=uid)
+    notification = Notifications.objects.filter(to=uid, status=1)
+    replycount = 0
+    for item in notification:
+        if item.subject == 'reply':
+            replycount += 1
+    if request.method == 'POST':
+        candidate_id = request.POST['candidate_id']
+        quiz_str = request.POST['quiz'].split('-', 1) 
+        title = quiz_str[0]
+        # eg: "April 22, 2022"
+        date_str = quiz_str[1].split(',', 1)
+        # eg: "April 22" " 2022"
+        date_str1 = date_str[0].split(' ', 1)
+        # eg: "April" "22"
+        month = date_str1[0]
+        str_date = month[0:3]+" "+date_str1[1]+date_str[1]
+        # eg: "April 22 2022"
+        date = datetime.strptime(str_date, '%b %d %Y')
+        quiz = Quizzes.objects.get(title=title, date_added=date)
+        try:
+            result = Results.objects.get(quiz_id=quiz.id, candidate_id=candidate_id)
+        except Results.DoesNotExist:
+            result = None
+        if result != None:
+            token = generate_token.make_token(user)
+            user_id = urlsafe_base64_encode(force_bytes(result.user_id.id))
+            quiz_id = urlsafe_base64_encode(force_bytes(result.quiz_id.id))
+            return redirect('generate_result', user_id, quiz_id, token)            
+        else:
+            messages.error(request, "Candidate Id not matching with the selected quiz.")
+            return redirect('user_view_results', user_id)
+    else:
+        quizzes = Quizzes.objects.all()
+        return render(request, 'users/user_view_results.html', {'role':role, 'replycount':replycount, 'current_year': current_year, 'user_id':user_id, 'name':user.fname, 'quizzes':quizzes})
+
 def render_to_pdf(template_src, context_dict={}):
     template = get_template(template_src)
     html  = template.render(context_dict)
@@ -452,8 +492,8 @@ def generate_result(request, user_id, quiz_id, token, *args, **kwargs):
             if pdf:
                 return HttpResponse(pdf, content_type='application/pdf')
             else:
-                return HttpResponse('Not found')
+                return HttpResponse('Not found1')
         else:
-            return HttpResponse('Not found')
+            return HttpResponse('Not found2')
     else:
-        return HttpResponse('Not found')
+        return HttpResponse('Not found3')

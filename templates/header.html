@@ -132,6 +132,9 @@
                     </span>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" href="{% url 'user_view_results' user_id %}">Results</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="{% url 'signout' %}">Logout</a>
                 </li>
                 </ul>
@@ -165,14 +168,16 @@
     </nav>
     <br>
     <div style="height: 100%;">
-        {% if messages %}
-        {% for message in messages %}
-        <div class="alert alert-warning alert-dismissible fade show" role="alert">
-            <strong>{{ message }}</strong>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <div class="container">
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>{{ message }}</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endfor %}
+            {% endif %}
         </div>
-        {% endfor %}
-        {% endif %}
 
         <div class="loader">
             <div class="dot dot1"></div>
