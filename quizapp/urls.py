@@ -18,8 +18,14 @@ from django.urls import path, include
 from users import views as users_views
 from site_admin import views as admin_views
 
+from django.views.static import serve
+from django.conf.urls import url
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+
+    url(r'^media/(?P<path>.*)$', serve,{'document_root': settings.MEDIA_ROOT}), 
+    url(r'^static/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT}), 
     
     path('', users_views.home, name='home'),
     path('signup', users_views.signup, name='signup'),
