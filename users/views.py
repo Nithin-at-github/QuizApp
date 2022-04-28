@@ -59,27 +59,34 @@ def contact(request):
 def forgot_password(request):
     if request.method == 'POST':
         username = request.POST['uname']
-
-        user = User.objects.get(username=username)
-        # Reset mail
-        current_site = get_current_site(request)
-        email_sub = "Reset Password"
-        message = render_to_string("users/reset_pass_mail.html",{
-            'user' : user.first_name,
-            'domain' : current_site.domain,
-            'uid' : urlsafe_base64_encode(force_bytes(user.pk)),
-            'token' : generate_token.make_token(user),
-        })
-        email = EmailMessage(
-            email_sub,
-            message,
-            settings.EMAIL_HOST_USER,
-            [user.email],
-        )
-        email.fail_silently=True
-        email.send()
-        messages.success(request, "Password reset link has been sent. Please check your mail")
-        return redirect('forgot_password')
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            user = None
+            
+        if user != None:
+            # Reset mail
+            current_site = get_current_site(request)
+            email_sub = "Reset Password"
+            message = render_to_string("users/reset_pass_mail.html",{
+                'user' : user.first_name,
+                'domain' : current_site.domain,
+                'uid' : urlsafe_base64_encode(force_bytes(user.pk)),
+                'token' : generate_token.make_token(user),
+            })
+            email = EmailMessage(
+                email_sub,
+                message,
+                settings.EMAIL_HOST_USER,
+                [user.email],
+            )
+            email.fail_silently=True
+            email.send()
+            messages.success(request, "Password reset link has been sent. Please check your mail")
+            return redirect('forgot_password')
+        else:
+            messages.error(request, "Username doesn't match any accounts.")
+            return redirect('forgot_password')
     else:
         return render(request, 'forgot_pass.html', {'current_year': current_year})
 
