@@ -193,24 +193,7 @@
         var email = "quizapp24x7@gmail.com";
         var mailto_link = 'mailto:' + email + "?subject=" + subject + "&body=I am " + name + "%0D%0A%0D%0A" + message + "%0D%0A";
 
-        window = window.open(mailto_link, 'emailWindow')
-        if (window && window.open && !window.closed) {
-            window.close();
-        }
-
-
-        // var name = document.getElementById("name").value;
-        // var email = document.getElementById("email").value;
-        // var subject = document.getElementById("subject").value;
-        // var message = document.getElementById("message").value;
-
-        // var mail = document.getElementById("mail-link")
-
-        // if (name == null || subject == null || message == null) {
-        //     alert("All fields should be filled !");
-        // } else {
-        //     mail.href = "mailto:quizapp24x7@gmail.com?subject=" + subject + "&body=" + message;
-        // }
+        window.open(mailto_link, 'emailWindow')
     }
 </script>
 
