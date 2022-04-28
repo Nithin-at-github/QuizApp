@@ -115,7 +115,7 @@
 </section>
 
 <section id="contact" class="section-bg">
-    <div class="container" style="align-items: center;">
+    <!-- <div class="container" style="align-items: center;">
         <br>
         <h2 align="center">Contact Us</h2>
         <br>
@@ -145,8 +145,74 @@
                 </div>
             </div>
         </div>
+    </div> -->
+    <br><br>
+    <div class="container">
+        <h2 class="heading mb-4" style="text-align: center;">Contact Us</h2>
+        <br><br>
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <div class="row justify-content-center">
+                    <div class="col-md-6">
+                        <p><img src="{% static 'img/contact.svg' %}" alt="Image" class="img-fluid"></p>
+                    </div>
+                    <div class="col-md-6">
+                        <div id="contact-section" class="container">
+                            <form class="mb-5" onsubmit="SendMessage()" method="post" action="{% url 'contact' %}">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <input type="text" class="form-control form-control-lg" name="name" id="name"
+                                        required placeholder="Your name">
+                                </div>
+                                <div class="row">
+                                    <input type="text" class="form-control form-control-lg" name="subject" id="subject"
+                                        required placeholder="Subject">
+                                </div>
+                                <div class="row">
+                                    <textarea class="form-control form-control-lg" name="message" id="message" cols="30"
+                                        rows="7" required placeholder="Write your message"></textarea>
+                                </div>
+                                <div class="row">
+                                    <input type="submit" class="btn btn-primary" value="Send Message">
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+
 </section>
+
+<script type="text/javascript">
+    function SendMessage() {
+        var name = document.getElementById("name").value;
+        var subject = document.getElementById("subject").value;
+        var message = document.getElementById("message").value;
+        var email = "quizapp24x7@gmail.com";
+        var mailto_link = 'mailto:' + email + "?subject=" + subject + "&body=I am " + name + "%0D%0A%0D%0A" + message + "%0D%0A";
+
+        window = window.open(mailto_link, 'emailWindow')
+        if (window && window.open && !window.closed) {
+            window.close();
+        }
+
+
+        // var name = document.getElementById("name").value;
+        // var email = document.getElementById("email").value;
+        // var subject = document.getElementById("subject").value;
+        // var message = document.getElementById("message").value;
+
+        // var mail = document.getElementById("mail-link")
+
+        // if (name == null || subject == null || message == null) {
+        //     alert("All fields should be filled !");
+        // } else {
+        //     mail.href = "mailto:quizapp24x7@gmail.com?subject=" + subject + "&body=" + message;
+        // }
+    }
+</script>
 
 {% endblock %}
 

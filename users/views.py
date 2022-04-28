@@ -53,6 +53,9 @@ def home(request):
             return redirect('home')
     return render(request, 'home.html', {'current_year': current_year, 'feedbacks':feedbacks,})
 
+def contact(request):
+    return redirect('home')
+
 def forgot_password(request):
     if request.method == 'POST':
         username = request.POST['uname']

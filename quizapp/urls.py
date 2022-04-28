@@ -30,6 +30,7 @@ urlpatterns = [
     path('', users_views.home, name='home'),
     path('signup', users_views.signup, name='signup'),
     path('signout', users_views.signout, name='signout'),
+    path('contact', users_views.contact, name='contact'),
     path('forgot_password', users_views.forgot_password, name='forgot_password'),
     path('reset_password/<uid64>/<token>/', users_views.reset_password, name='reset_password'),
     path('activate/<uid64>/<token>/', users_views.activate, name='activate'),
