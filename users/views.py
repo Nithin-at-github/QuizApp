@@ -127,7 +127,8 @@ def reset_password(request, uid64, token):
 
 def signout(request):
     logout(request)
-    del request.session['uid']
+    if request.session.has_key('uid'):
+        del request.session['uid']
     messages.success(request, "Logged out succcessfully")
     return redirect('home')
 
