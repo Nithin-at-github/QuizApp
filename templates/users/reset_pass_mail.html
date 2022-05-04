@@ -1,7 +1,7 @@
 {% autoescape off %}
 Hello {{ user }}
 
-You can now reset your password by clicking on the following link.
+You can now reset your password by clicking the following link.
 
 Reset link : http://{{ domain }}{% url 'reset_password' uid64=uid token=token %}
 

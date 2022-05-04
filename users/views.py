@@ -127,6 +127,7 @@ def reset_password(request, uid64, token):
 
 def signout(request):
     logout(request)
+    del request.session['uid']
     messages.success(request, "Logged out succcessfully")
     return redirect('home')
 
@@ -170,7 +171,7 @@ def signup(request):
         
                 # Welcome Email
                 subject = "Welcome to Quiz App"
-                message = "Hello " + myuser.first_name + " !! \n" + "Welcome to Quiz App ! \nThank you for visting my website.\nI'll send you a confirmation mail. Please confirm your email id inorder to activate your account.\n\nRegards,\nQUIZ APP Administrator"
+                message = "Hello " + myuser.first_name + " !! \n" + "Welcome to Quiz App ! \nThank you for visting our website.\nWe've send you a confirmation email. Please confirm your email id inorder to activate your account.\n\nRegards,\nQUIZ APP Administrator"
                 from_email = settings.EMAIL_HOST_USER
                 to_list = [myuser.email]
                 send_mail(subject, message, from_email, to_list, fail_silently=True)
@@ -219,38 +220,44 @@ def feedbacks(request):
 
 @login_required(login_url='home')
 def user_dashboard(request, name, id64):
-    role = 'user'
-    id = force_str(urlsafe_base64_decode(id64))
-    notification = Notifications.objects.filter(to=id, status=1)
-    replycount = 0
-    for item in notification:
-        if item.subject == 'reply':
-            replycount += 1
-    if request.session.has_key('user'):
-        del request.session['user']
-    user = Users.objects.get(pk=id)
-    user_inst = get_object_or_404(Users, id=id)
-    uid = urlsafe_base64_encode(force_bytes(id))
-    fullname = user.fname+' '+user.lname
-    quizzes = Quizzes.objects.all
-    return render(request, 'users/user_dashboard.html', {'role':role, 'replycount':replycount, 'name':name, 'current_year': current_year, 'user_id':uid, 'user':user_inst, 'fname':name, 'fullname':fullname, 'quizzes':quizzes,})
+    if request.session.has_key('uid'):
+        role = 'user'
+        id = force_str(urlsafe_base64_decode(id64))
+        notification = Notifications.objects.filter(to=id, status=1)
+        replycount = 0
+        for item in notification:
+            if item.subject == 'reply':
+                replycount += 1
+        if request.session.has_key('user'):
+            del request.session['user']
+        user = Users.objects.get(pk=id)
+        user_inst = get_object_or_404(Users, id=id)
+        uid = urlsafe_base64_encode(force_bytes(id))
+        fullname = user.fname+' '+user.lname
+        quizzes = Quizzes.objects.all
+        return render(request, 'users/user_dashboard.html', {'role':role, 'replycount':replycount, 'name':name, 'current_year': current_year, 'user_id':uid, 'user':user_inst, 'fname':name, 'fullname':fullname, 'quizzes':quizzes,})
+    else:
+        return redirect('home')
 
 @login_required(login_url='home')
 def instructions(request, user_id, quiz_id):
-    role = 'user'
-    uid = force_str(urlsafe_base64_decode(user_id))
-    notification = Notifications.objects.filter(to=uid, status=1)
-    replycount = 0
-    for item in notification:
-        if item.subject == 'reply':
-            replycount += 1
-    qid = urlsafe_base64_encode(force_bytes(quiz_id))
-    quiz = Quizzes.objects.get(pk=quiz_id)
-    user = Users.objects.get(pk=uid)
-    current_site = get_current_site(request)
-    domain = current_site.domain
-    request.session['user'] = user_id
-    return render(request, 'users/instructions.html', {'role':role, 'replycount':replycount, 'name':user.fname, 'current_year': current_year, 'user_id':user_id, 'quiz_id':qid, 'domain':domain, 'quiz':quiz,})
+    if request.session.has_key('uid'):
+        role = 'user'
+        uid = force_str(urlsafe_base64_decode(user_id))
+        notification = Notifications.objects.filter(to=uid, status=1)
+        replycount = 0
+        for item in notification:
+            if item.subject == 'reply':
+                replycount += 1
+        qid = urlsafe_base64_encode(force_bytes(quiz_id))
+        quiz = Quizzes.objects.get(pk=quiz_id)
+        user = Users.objects.get(pk=uid)
+        current_site = get_current_site(request)
+        domain = current_site.domain
+        request.session['user'] = user_id
+        return render(request, 'users/instructions.html', {'role':role, 'replycount':replycount, 'name':user.fname, 'current_year': current_year, 'user_id':user_id, 'quiz_id':qid, 'domain':domain, 'quiz':quiz,})
+    else:
+        return redirect('home')
 
 question_number = 1
 score = 0
@@ -325,79 +332,91 @@ def attempt(request, user_id, quiz_id):
 
 @login_required(login_url='home')
 def add_feedback(request, user_id, rtype='manual'):
-    role = 'user'
-    uid = force_str(urlsafe_base64_decode(user_id))
-    notification = Notifications.objects.filter(to=uid, status=1)
-    replycount = 0
-    for item in notification:
-        if item.subject == 'reply':
-            replycount += 1
-    if request.session.has_key('user'):
-        rtype = 'auto'
-        del request.session['user']
-    user = Users.objects.get(pk=uid)
-    fullname = user.fname+ ' ' +user.lname
-    date = datetime.now().strftime('%Y-%m-%d')
+    if request.session.has_key('uid'):
+        role = 'user'
+        uid = force_str(urlsafe_base64_decode(user_id))
+        notification = Notifications.objects.filter(to=uid, status=1)
+        replycount = 0
+        for item in notification:
+            if item.subject == 'reply':
+                replycount += 1
+        if request.session.has_key('user'):
+            rtype = 'auto'
+            del request.session['user']
+        user = Users.objects.get(pk=uid)
+        fullname = user.fname+ ' ' +user.lname
+        date = datetime.now().strftime('%Y-%m-%d')
 
-    if request.method == 'POST': 
-        form = AddFeedbackForm(request.POST or None)
-        if form.is_valid():
-            form.save()
-            notify = Notifications(to='admin', subject='feedback', status=1)
-            notify.save()
-            return redirect('user_dashboard', user.fname, user_id)
-    return render(request, 'users/add_feedback.html',{'role':role, 'replycount':replycount, 'name':user.fname, 'rtype':rtype, 'current_year': current_year, 'user_id':user_id, 'uid':uid, 'fullname':fullname, 'date':date,})
+        if request.method == 'POST': 
+            form = AddFeedbackForm(request.POST or None)
+            if form.is_valid():
+                form.save()
+                notify = Notifications(to='admin', subject='feedback', status=1)
+                notify.save()
+                return redirect('user_dashboard', user.fname, user_id)
+        return render(request, 'users/add_feedback.html',{'role':role, 'replycount':replycount, 'name':user.fname, 'rtype':rtype, 'current_year': current_year, 'user_id':user_id, 'uid':uid, 'fullname':fullname, 'date':date,})
+    else:
+        return redirect('home')
 
 @login_required(login_url='home')
 def reply_notify(request, user_id):
-    uid = force_str(urlsafe_base64_decode(user_id))
-    Notifications.objects.filter(to=uid, subject='reply', status=1).update(status=0)
-    return redirect('user_view_feedbacks', user_id)
+    if request.session.has_key('uid'):
+        uid = force_str(urlsafe_base64_decode(user_id))
+        Notifications.objects.filter(to=uid, subject='reply', status=1).update(status=0)
+        return redirect('user_view_feedbacks', user_id)
+    else:
+        return redirect('home')
 
 @login_required(login_url='home')
 def user_view_feedbacks(request, user_id):
-    role = 'user'
-    uid = force_str(urlsafe_base64_decode(user_id))
-    notification = Notifications.objects.filter(to=uid, status=1)
-    replycount = 0
-    for item in notification:
-        if item.subject == 'reply':
-            replycount += 1
-    user = Users.objects.get(pk=uid)
-    feedbacks = Feedbacks.objects.all().filter(user_id=uid)
-    if request.method == 'POST':
-        feed_id = int(request.POST['id'])
-        mode = 'edit'
-        date = datetime.now().strftime('%Y-%m-%d')
-        return render(request, 'users/user_view_feedbacks.html', {'role':role, 'replycount':replycount, 'name':user.fname, 'current_year': current_year, 'user_id':user_id, 'feedbacks':feedbacks, 'feed_id':feed_id, 'mode':mode, 'date':date,})
+    if request.session.has_key('uid'):
+        role = 'user'
+        uid = force_str(urlsafe_base64_decode(user_id))
+        notification = Notifications.objects.filter(to=uid, status=1)
+        replycount = 0
+        for item in notification:
+            if item.subject == 'reply':
+                replycount += 1
+        user = Users.objects.get(pk=uid)
+        feedbacks = Feedbacks.objects.all().filter(user_id=uid)
+        if request.method == 'POST':
+            feed_id = int(request.POST['id'])
+            mode = 'edit'
+            date = datetime.now().strftime('%Y-%m-%d')
+            return render(request, 'users/user_view_feedbacks.html', {'role':role, 'replycount':replycount, 'name':user.fname, 'current_year': current_year, 'user_id':user_id, 'feedbacks':feedbacks, 'feed_id':feed_id, 'mode':mode, 'date':date,})
+        else:
+            return render(request, 'users/user_view_feedbacks.html', {'role':role, 'replycount':replycount, 'name':user.fname, 'current_year': current_year, 'user_id':user_id, 'feedbacks':feedbacks})
     else:
-        return render(request, 'users/user_view_feedbacks.html', {'role':role, 'replycount':replycount, 'name':user.fname, 'current_year': current_year, 'user_id':user_id, 'feedbacks':feedbacks})
+        return redirect('home')
 
 @login_required(login_url='home')
 def update_feedback(request, user_id, feed_id):
-    role = 'user'
-    uid = force_str(urlsafe_base64_decode(user_id))
-    notification = Notifications.objects.filter(to=uid, status=1)
-    replycount = 0
-    for item in notification:
-        if item.subject == 'reply':
-            replycount += 1
-    user = Users.objects.get(pk=uid)
-    feedbacks = Feedbacks.objects.all().filter(user_id=uid)
-    if request.method == 'POST':
-        instance = get_object_or_404(Feedbacks, id=request.POST['id'])
-        updateform = UpdateFeedback(request.POST or None, instance=instance)
-        if updateform.is_valid():
-            updateform.save()
-            notify = Notifications(to='admin', subject='feedback', status=1)
-            notify.save()
-            messages.success(request, "Feedback edited successfully")
-            return redirect('user_view_feedbacks', user_id)
+    if request.session.has_key('uid'):
+        role = 'user'
+        uid = force_str(urlsafe_base64_decode(user_id))
+        notification = Notifications.objects.filter(to=uid, status=1)
+        replycount = 0
+        for item in notification:
+            if item.subject == 'reply':
+                replycount += 1
+        user = Users.objects.get(pk=uid)
+        feedbacks = Feedbacks.objects.all().filter(user_id=uid)
+        if request.method == 'POST':
+            instance = get_object_or_404(Feedbacks, id=request.POST['id'])
+            updateform = UpdateFeedback(request.POST or None, instance=instance)
+            if updateform.is_valid():
+                updateform.save()
+                notify = Notifications(to='admin', subject='feedback', status=1)
+                notify.save()
+                messages.success(request, "Feedback edited successfully")
+                return redirect('user_view_feedbacks', user_id)
+            else:
+                messages.error(request, "Something went wrong")
+                return redirect('add_feedbacks', user_id)
         else:
-            messages.error(request, "Something went wrong")
-            return redirect('add_feedbacks', user_id)
+            return render(request, 'users/user_view_feedbacks.html', {'role':role, 'replycount':replycount, 'name':user.fname, 'current_year': current_year, 'user_id':user_id, 'feedbacks':feedbacks})
     else:
-        return render(request, 'users/user_view_feedbacks.html', {'role':role, 'replycount':replycount, 'name':user.fname, 'current_year': current_year, 'user_id':user_id, 'feedbacks':feedbacks})
+        return redirect('home')
 
 def delete_feedback(request, user_id, feed_id):
     feedback = Feedbacks.objects.get(pk=feed_id)
@@ -407,43 +426,46 @@ def delete_feedback(request, user_id, feed_id):
 
 @login_required(login_url='home')
 def user_view_results(request, user_id):
-    role = 'user'
-    uid = force_str(urlsafe_base64_decode(user_id))
-    user = Users.objects.get(pk=uid)
-    notification = Notifications.objects.filter(to=uid, status=1)
-    replycount = 0
-    for item in notification:
-        if item.subject == 'reply':
-            replycount += 1
-    if request.method == 'POST':
-        candidate_id = request.POST['candidate_id']
-        quiz_str = request.POST['quiz'].split('-', 1) 
-        title = quiz_str[0]
-        # eg: "April 22, 2022"
-        date_str = quiz_str[1].split(',', 1)
-        # eg: "April 22" " 2022"
-        date_str1 = date_str[0].split(' ', 1)
-        # eg: "April" "22"
-        month = date_str1[0]
-        str_date = month[0:3]+" "+date_str1[1]+date_str[1]
-        # eg: "April 22 2022"
-        date = datetime.strptime(str_date, '%b %d %Y')
-        quiz = Quizzes.objects.get(title=title, date_added=date)
-        try:
-            result = Results.objects.get(quiz_id=quiz.id, candidate_id=candidate_id)
-        except Results.DoesNotExist:
-            result = None
-        if result != None:
-            token = generate_token.make_token(user)
-            user_id = urlsafe_base64_encode(force_bytes(result.user_id.id))
-            quiz_id = urlsafe_base64_encode(force_bytes(result.quiz_id.id))
-            return redirect('generate_result', user_id, quiz_id, token)            
+    if request.session.has_key('uid'):
+        role = 'user'
+        uid = force_str(urlsafe_base64_decode(user_id))
+        user = Users.objects.get(pk=uid)
+        notification = Notifications.objects.filter(to=uid, status=1)
+        replycount = 0
+        for item in notification:
+            if item.subject == 'reply':
+                replycount += 1
+        if request.method == 'POST':
+            candidate_id = request.POST['candidate_id']
+            quiz_str = request.POST['quiz'].split('-', 1) 
+            title = quiz_str[0]
+            # eg: "April 22, 2022"
+            date_str = quiz_str[1].split(',', 1)
+            # eg: "April 22" " 2022"
+            date_str1 = date_str[0].split(' ', 1)
+            # eg: "April" "22"
+            month = date_str1[0]
+            str_date = month[0:3]+" "+date_str1[1]+date_str[1]
+            # eg: "April 22 2022"
+            date = datetime.strptime(str_date, '%b %d %Y')
+            quiz = Quizzes.objects.get(title=title, date_added=date)
+            try:
+                result = Results.objects.get(quiz_id=quiz.id, candidate_id=candidate_id)
+            except Results.DoesNotExist:
+                result = None
+            if result != None:
+                token = generate_token.make_token(user)
+                user_id = urlsafe_base64_encode(force_bytes(result.user_id.id))
+                quiz_id = urlsafe_base64_encode(force_bytes(result.quiz_id.id))
+                return redirect('generate_result', user_id, quiz_id, token)            
+            else:
+                messages.error(request, "Candidate Id not matching with the selected quiz.")
+                return redirect('user_view_results', user_id)
         else:
-            messages.error(request, "Candidate Id not matching with the selected quiz.")
-            return redirect('user_view_results', user_id)
+            quizzes = Quizzes.objects.all()
+            return render(request, 'users/user_view_results.html', {'role':role, 'replycount':replycount, 'current_year': current_year, 'user_id':user_id, 'name':user.fname, 'quizzes':quizzes})
     else:
-        quizzes = Quizzes.objects.all()
-        return render(request, 'users/user_view_results.html', {'role':role, 'replycount':replycount, 'current_year': current_year, 'user_id':user_id, 'name':user.fname, 'quizzes':quizzes})
+        return redirect('home')
 
 def render_to_pdf(template_src, context_dict={}):
     template = get_template(template_src)
