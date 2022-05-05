@@ -121,7 +121,7 @@ def delete_result(request, id, name):
     else:
         return redirect('home')
 
-question_count = 0
+# question_count = 0
 @login_required(login_url='home')
 def add_update_questions(request, qid, name):
     current_user = User.objects.get(pk=request.user.id)
@@ -138,7 +138,7 @@ def add_update_questions(request, qid, name):
                 resultcount += 1
             elif item.subject == 'new_user':
                 usercount += 1
-        global question_count
+        # global question_count
         quiz = Quizzes.objects.get(pk=qid)
         tot = quiz.tot_questions
         QuestionFormset = inlineformset_factory(Quizzes, Questions, fields=('question_no', 'question', 'option1', 'option2', 'option3', 'option4', 'answer'), can_delete=False, extra=1, max_num=tot)
@@ -146,16 +146,25 @@ def add_update_questions(request, qid, name):
             formset = QuestionFormset(request.POST, instance=quiz)
             if formset.is_valid():
                 formset.save()
-                question_count += 1
-                if question_count == tot:
+                if request.session.has_key('q_count'):
+                    question_count = request.session['q_count']
+                else:
                     question_count = 0
+                question_count += 1
+                if question_count >= tot:
                     messages.success(request, 'Questions and details added sucessfully.')
+                    del request.session['q_count']
                     return redirect('admin_dashboard', name)
                 else:
+                    del request.session['q_count']
+                    request.session['q_count'] = question_count
+                    # messages.success(request, 'Question '+str(question_count)+' added sucessfully.')
                     return redirect('add_update_questions', qid=quiz.id, name=name)
-        
-        formset = QuestionFormset(instance=quiz)
-        return render(request, 'admin/questions.html', {'role':role, 'feedcount':feedcount, 'resultcount':resultcount, 'usercount':usercount, 'current_year': current_year, 'id':int(qid), 'uname':name, 'formset':formset, 'count':question_count+1})
+        else:
+            formset = QuestionFormset(instance=quiz)
+            if not request.session.has_key('q_count'):
+                request.session['q_count'] = 0
+            return render(request, 'admin/questions.html', {'role':role, 'feedcount':feedcount, 'resultcount':resultcount, 'usercount':usercount, 'current_year': current_year, 'id':int(qid), 'uname':name, 'formset':formset, })
     else:
         return redirect('home')
 

@@ -260,14 +260,31 @@ def instructions(request, user_id, quiz_id):
     else:
         return redirect('home')
 
-question_number = 1
-score = 0
-correct_answers = 0
-wrong_answers = 0
+# question_number = 1
+# score = 0
+# correct_answers = 0
+# wrong_answers = 0
 @login_required(login_url='home')
 def attempt(request, user_id, quiz_id):
     if request.session.has_key('user'):
-        global question_number, score, correct_answers, wrong_answers
+        # global question_number, score, correct_answers, wrong_answers
+        
+        if not request.session.has_key('qst_no'):
+            request.session['qst_no'] = 1
+        question_number = request.session['qst_no']
+        
+        if not request.session.has_key('score'):
+            request.session['score'] = 0
+        score = request.session['score']
+        
+        if not request.session.has_key('cor_ans'):
+            request.session['cor_ans'] = 0
+        correct_answers = request.session['cor_ans']
+        
+        if not request.session.has_key('wr_ans'):
+            request.session['wr_ans'] = 0
+        wrong_answers = request.session['wr_ans']
+
         uid = force_str(urlsafe_base64_decode(user_id))
         qid = force_str(urlsafe_base64_decode(quiz_id))
         user = Users.objects.get(pk=uid)
@@ -284,13 +301,25 @@ def attempt(request, user_id, quiz_id):
                 check = Questions.objects.get(quiz_id=qid, question_no=question_number)
                 if check.answer == answer:
                     correct_answers += 1
+                    del request.session['cor_ans']
+                    request.session['cor_ans'] = correct_answers
+                    
                     score += quiz.mark_for_correct
+                    del request.session['score']
+                    request.session['score'] = score
                 else:
                     wrong_answers += 1
+                    del request.session['wr_ans']
+                    request.session['wr_ans'] = wrong_answers
+                    
                     score += quiz.mark_for_wrong
+                    del request.session['score']
+                    request.session['score'] = score
             
             if question_number < tot_questions:
                 question_number += 1
+                del request.session['qst_no']
+                request.session['qst_no'] = question_number
                 questions = Questions.objects.get(quiz_id=qid, question_no=question_number)
                 return render(request, 'users/attempt_quiz.html', {'current_year': current_year, 'user_id':user_id, 'quiz_id':quiz_id, 'candidate_id':candidate_id, 'question':questions, 'q_time':time,})
             else:
@@ -301,7 +330,7 @@ def attempt(request, user_id, quiz_id):
                 score = 0
                 correct_answers = 0
                 wrong_answers = 0
-                question_number = 1
+                del request.session['qst_no']
                 # Result mail
                 current_site = get_current_site(request)
                 email_sub = "Quiz Result"
