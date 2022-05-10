@@ -256,18 +256,17 @@ def instructions(request, user_id, quiz_id):
         current_site = get_current_site(request)
         domain = current_site.domain
         request.session['user'] = user_id
-        return render(request, 'users/instructions.html', {'role':role, 'replycount':replycount, 'name':user.fname, 'current_year': current_year, 'user_id':user_id, 'quiz_id':qid, 'domain':domain, 'quiz':quiz,})
+        user_inst = get_object_or_404(Users, id=uid)
+        if user_inst in quiz.attendees.all():
+            return redirect('user_dashboard', user.fname, user_id)
+        else:
+            return render(request, 'users/instructions.html', {'role':role, 'replycount':replycount, 'name':user.fname, 'current_year': current_year, 'user_id':user_id, 'quiz_id':qid, 'domain':domain, 'quiz':quiz,})
     else:
         return redirect('home')
 
-# question_number = 1
-# score = 0
-# correct_answers = 0
-# wrong_answers = 0
 @login_required(login_url='home')
 def attempt(request, user_id, quiz_id):
     if request.session.has_key('user'):
-        # global question_number, score, correct_answers, wrong_answers
         
         if not request.session.has_key('qst_no'):
             request.session['qst_no'] = 1
@@ -327,9 +326,9 @@ def attempt(request, user_id, quiz_id):
                 result.save()
                 notify = Notifications(to='admin', subject='result', status=1)
                 notify.save()
-                score = 0
-                correct_answers = 0
-                wrong_answers = 0
+                del request.session['score']
+                del request.session['cor_ans']
+                del request.session['wr_ans']
                 del request.session['qst_no']
                 # Result mail
                 current_site = get_current_site(request)
@@ -532,6 +531,8 @@ def generate_result(request, user_id, quiz_id, token, *args, **kwargs):
             elif 50 <= percent > 40:
                 grade = 'C'
             elif 40 <= percent > 30:
+                grade = 'D+'
+            elif percent == 30:
                 grade = 'D'
             elif percent < 30:
                 grade = 'E'
