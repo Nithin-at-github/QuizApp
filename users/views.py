@@ -2,7 +2,7 @@ from quizapp import settings
 from site_admin import views
 from . tokens import generate_token
 from .forms import UsersForm, UserPassUpdateForm, AddFeedbackForm, UpdateFeedback
-from .models import Users, Quizzes, Questions, Results, Feedbacks, Notifications
+from .models import Users, Quizzes, Questions, Results, Feedbacks, Notifications, QuizLogs
 
 from django.core.mail import send_mail, EmailMessage
 from django.contrib import messages
@@ -297,6 +297,8 @@ def attempt(request, user_id, quiz_id):
         if request.method == 'POST':
             if request.POST.get('answer', False):
                 answer = request.POST.get('answer', False)
+                logs = QuizLogs.objects.create(candidate_id=candidate_id, question_no=question_number, selected_option=answer)
+                logs.save()
                 check = Questions.objects.get(quiz_id=qid, question_no=question_number)
                 if check.answer == answer:
                     correct_answers += 1
@@ -314,7 +316,9 @@ def attempt(request, user_id, quiz_id):
                     score += quiz.mark_for_wrong
                     del request.session['score']
                     request.session['score'] = score
-            
+            else:
+                logs = QuizLogs.objects.create(candidate_id=candidate_id, question_no=question_number, selected_option='NA')
+                logs.save()
             if question_number < tot_questions:
                 question_number += 1
                 del request.session['qst_no']
@@ -350,7 +354,9 @@ def attempt(request, user_id, quiz_id):
                 email.send()
                 candidate = get_object_or_404(Users, id=uid)
                 quiz.attendees.add(candidate)
-                return redirect('add_feedback', user_id)
+                cand_id = urlsafe_base64_encode(force_bytes(candidate_id))
+                return redirect('view_logs', user_id, quiz_id, cand_id, 'user')
+                # return redirect('add_feedback', user_id)
         else:
             questions = Questions.objects.get(quiz_id=qid, question_no=question_number)
             return render(request, 'users/attempt_quiz.html', {'current_year': current_year, 'user_id':user_id, 'quiz_id':quiz_id, 'candidate_id':candidate_id, 'question':questions, 'q_time':time,})
@@ -358,6 +364,26 @@ def attempt(request, user_id, quiz_id):
         uid = force_str(urlsafe_base64_decode(user_id))
         user = Users.objects.get(pk=uid)
         return redirect('user_dashboard', user.fname, user_id)
+
+@login_required(login_url='home')
+def view_logs(request, user_id, quiz_id, cand_id, mode='user'):
+    if mode == 'admin':
+        logs = QuizLogs.objects.filter(candidate_id=cand_id)
+        if logs:
+            uid = urlsafe_base64_encode(force_bytes(user_id))
+            questions = Questions.objects.filter(quiz_id=quiz_id)    
+            return render(request, 'users/view_logs.html', {'current_year': current_year, 'user_id':uid, 'candidate_id': cand_id, 'questions': questions, 'logs': logs, 'mode': mode})
+        else:
+            HttpResponse("Not Found")
+    else:
+        cid = force_str(urlsafe_base64_decode(cand_id))
+        logs = QuizLogs.objects.filter(candidate_id=cid)
+        if logs:
+            qid = force_str(urlsafe_base64_decode(quiz_id))
+            questions = Questions.objects.filter(quiz_id=qid)    
+            return render(request, 'users/view_logs.html', {'current_year': current_year, 'user_id':user_id, 'candidate_id': cid, 'questions': questions, 'logs': logs, 'mode': mode})
+        else:
+            HttpResponse("Not Found")
 
 @login_required(login_url='home')
 def add_feedback(request, user_id, rtype='manual'):
@@ -515,7 +541,7 @@ def generate_result(request, user_id, quiz_id, token, *args, **kwargs):
     if user is not None and generate_token.check_token(user, token):
         qid = force_str(urlsafe_base64_decode(quiz_id))
         quiz = Quizzes.objects.get(pk=qid)
-        result = Results.objects.get(user_id=uid, quiz_id=qid)
+        result = Results.objects.get(user_id=uid, quiz_id=qid)        
         if result:
             percent = (result.score / result.max_mark) * 100
             if 100 <= percent > 90:

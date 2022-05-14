@@ -1,6 +1,6 @@
 from quizapp import settings
 from users import views
-from users.models import Users, Quizzes, Questions, Results, Feedbacks, Notifications
+from users.models import Users, Quizzes, Questions, Results, Feedbacks, Notifications, QuizLogs
 from users.tokens import generate_token
 from .forms import AddQuizForm, AddFeedbackReply, UpdateFeedbackReply
 
@@ -112,9 +112,11 @@ def delete_result(request, id, name):
         result = Results.objects.get(pk=id)
         uid = result.user_id.id
         qid = result.quiz_id.id
+        candidate_id = result.candidate_id
         quiz = Quizzes.objects.get(pk=qid)
         candidate = get_object_or_404(Users, id=uid)
         quiz.attendees.remove(candidate)
+        QuizLogs.objects.filter(candidate_id=candidate_id).delete()
         result.delete()
         messages.success(request, "Result deleted successfully.")
         return redirect('view_results', name)

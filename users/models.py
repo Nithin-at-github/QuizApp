@@ -88,3 +88,11 @@ class Notifications(models.Model):
 
     def __str__(self):
         return self.subject
+
+class QuizLogs(models.Model):
+    candidate_id = models.CharField('Candidate Id', max_length=100)
+    question_no = models.IntegerField(default=0)
+    selected_option = models.CharField('Option selected by user', max_length=10)
+
+    def __str__(self):
+        return str(self.candidate_id)+'-'+str(self.question_no)

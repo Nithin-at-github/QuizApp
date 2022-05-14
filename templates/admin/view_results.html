@@ -25,6 +25,8 @@
                     <td>{{ item.candidate_id }}</td>
                     <td>
                         <input type="submit" class="btn btn-success btn-sm" value="View">&nbsp;&nbsp;&nbsp;&nbsp;
+                        <a href="{% url 'view_logs' item.user_id.id item.quiz_id.id item.candidate_id 'admin' %}"
+                            class="btn btn-outline-success btn-sm"><b>Logs</b></a>&nbsp;&nbsp;&nbsp;&nbsp;
                         <a id="delete" href="{% url 'delete_result' item.id uname %}" class="btn btn-danger btn-sm"
                             title="Delete Result"
                             onclick="return confirm('Are you sure ? This action can`t be undone !')"><i

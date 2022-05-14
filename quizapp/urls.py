@@ -44,6 +44,7 @@ urlpatterns = [
     path('update_feedback/<user_id>/<feed_id>/', users_views.update_feedback, name='update_feedback'),
     path('delete_feedback/<user_id>/<feed_id>/', users_views.delete_feedback, name='delete_feedback'),
     path('user_view_results/<user_id>/', users_views.user_view_results, name='user_view_results'),
+    path('view_logs/<user_id>/<quiz_id>/<cand_id>/<mode>/', users_views.view_logs, name='view_logs'),
 
     path('generate_result/<user_id>/<quiz_id>/<token>/', users_views.generate_result, name='generate_result'),
     
