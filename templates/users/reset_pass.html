@@ -10,21 +10,28 @@
                 <form method="post" action="{% url 'reset_password' uid token %}">
                     {% csrf_token %}
                     <div class="divider d-flex align-items-center my-4">
-                        <p><b>Enter your new password and confirm it.</b></p>
+                        <p>
+                            <b>Enter your new password and confirm it.</b>
+                            <label class="form-label" style="font-size: 12px;">
+                                <i style="color: red;" class="fa fa-sm fa-asterisk" aria-hidden="true"></i>
+                                Password must be a combination of upper case, lower case letters and numbers.
+                            </label>
+                        </p>
                     </div>
-
                     <div class="form-outline mb-4">
-                        <input type="password" id="form3Example3" name="password" class="form-control form-control-lg"
+                        <input type="password" id="form3Example1" name="password" class="form-control form-control-lg"
                             placeholder="Enter new password" required />
-                        <label class="form-label" for="form3Example3">New Password</label>
+                        <label class="form-label" for="form3Example1">New Password</label>
                     </div>
-
                     <div class="form-outline mb-4">
-                        <input type="password" id="form3Example3" name="cpassword" class="form-control form-control-lg"
+                        <input type="password" id="form3Example2" name="cpassword" class="form-control form-control-lg"
                             placeholder="Confirm your new password" required />
-                        <label class="form-label" for="form3Example3">Confirm New Password</label>
+                        <label class="form-label" for="form3Example2">Confirm New Password</label>
                     </div>
-
+                    <div class="form-outline mb-1">
+                        {{ form.captcha }}<br>
+                        <label class="form-label">Enter Captcha Code</label>
+                    </div>
                     <div class="text-center text-lg-start mt-4 pt-2">
                         <button type="submit" class="btn btn-primary btn-lg" name="reset"
                             style="padding-left: 2.5rem; padding-right: 2.5rem;">Reset</button>

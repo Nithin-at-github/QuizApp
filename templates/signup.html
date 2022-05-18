@@ -1,4 +1,5 @@
 {% include 'header.html' %}
+{% load static %}
 
 {% block content %}
 <style>
@@ -26,8 +27,7 @@
     <div class="container-fluid h-custom">
         <div class="row d-flex justify-content-center align-items-center h-100">
             <div class="col-md-9 col-lg-6 col-xl-5">
-                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp"
-                    class="img-fluid" alt="Sample image">
+                <img src="{% static 'img/logo.webp' %}" class="img-fluid" alt="Sample image">
             </div>
             <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
                 <form method="post" action="{% url 'signup' %}">
@@ -61,7 +61,7 @@
                     <div class="form-outline mb-1">
                         <input type="email" id="form3Example3" name="email" class="form-control form-control-lg"
                             placeholder="Enter a valid email address" required />
-                        <label class="form-label" for="form3Example3">Email address</label>
+                        <label class="form-label" for="form3Example3">Email Address</label>
                     </div>
 
                     <!-- Password input -->
@@ -69,14 +69,21 @@
                         <input type="password" id="form3Example4" name="password" class="form-control form-control-lg"
                             placeholder="Enter password" required />
                         <label class="form-label" for="form3Example4">Password</label>
+                        <label class="form-label" style="font-size: 12px;">
+                            <i style="color: red;" class="fa fa-sm fa-asterisk" aria-hidden="true"></i>
+                            Password must be a combination of upper case, lower case letters and numbers.
+                        </label>
                     </div>
 
                     <div class="form-outline mb-1">
                         <input type="password" id="form3Example4" name="cpassword" class="form-control form-control-lg"
                             placeholder="Confirm password" required />
                         <label class="form-label" for="form3Example4">Confirm Password</label>
+                    </div><br>
+                    <div class="form-outline mb-1">
+                        {{ form.captcha }}<br>
+                        <label class="form-label" for="form3Example4">Enter Captcha Code</label>
                     </div>
-
                     <div class="text-center text-lg-start mt-2 pt-2">
                         <button type="submit" class="btn btn-primary btn-lg" name="signup"
                             style="padding-left: 2.5rem; padding-right: 2.5rem;">Register</button>

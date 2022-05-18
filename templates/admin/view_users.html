@@ -10,6 +10,7 @@
                 <th></th>
                 <th>Full Name</th>
                 <th>Email id</th>
+                <th>Activated ?</th>
                 <th></th>
             </tr>
         </thead>
@@ -19,6 +20,11 @@
                 <th>{{ forloop.counter }}</th>
                 <td>{{ item.fname }} {{ item.lname }}</td>
                 <td>{{ item.email }}</td>
+                {% if item.status == 'activated' %}
+                <td><i style="color: green;" class="fa fa-lg fa-check" aria-hidden="true"></i></td>
+                {% else %}
+                <td><i style="color: red;" class="fa fa-lg fa-times" aria-hidden="true"></i></td>
+                {% endif %}
                 <td><a href="{% url 'delete_user' item.id uname %}" class="btn btn-danger btn-sm" title="Delete User"
                         onclick="return confirm('Are you sure ? This action can`t be undone !')"><i
                             class="bi bi-trash3"></i></a></td>

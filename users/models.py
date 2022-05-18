@@ -6,6 +6,7 @@ class Users(models.Model):
     fname = models.CharField(max_length=100)
     lname = models.CharField(max_length=100, blank=True)
     email = models.EmailField(max_length=100)
+    status = models.CharField(max_length=20, default='not_activated')
 
     def __str__(self):
         return self.fname+ ' ' +self.lname

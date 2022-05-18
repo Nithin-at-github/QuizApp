@@ -1,7 +1,7 @@
 from quizapp import settings
 from site_admin import views
 from . tokens import generate_token
-from .forms import UsersForm, UserPassUpdateForm, AddFeedbackForm, UpdateFeedback
+from .forms import UsersForm, ActivateForm, UserPassUpdateForm, AddFeedbackForm, UpdateFeedback, CaptchaForm
 from .models import Users, Quizzes, Questions, Results, Feedbacks, Notifications, QuizLogs
 
 from django.core.mail import send_mail, EmailMessage
@@ -95,34 +95,58 @@ def reset_password(request, uid64, token):
         uid =force_str(urlsafe_base64_decode(uid64))
         passwd = request.POST['password']
         cpasswd = request.POST['cpassword']
+        is_alpha = False
+        is_num = False
+        is_upper = False
+        is_lower = False
+        is_special = False
+
+        for x in passwd:
+            if x.isalpha():
+                is_alpha = True
+                if x.isupper() and is_upper == False:
+                    is_upper = True
+                elif x.islower() and is_lower == False:
+                    is_lower = True
+            elif x.isnumeric() and is_num == False:
+                is_num = True
 
         if len(passwd)<8:
             messages.error(request, "Password should have atleast 8 characters.")
+            return redirect('reset_password', uid64, token)
+        elif is_alpha != True or is_num != True or is_upper != True or is_lower != True:
+            messages.error(request, "Password must be a combination of upper case, lower case letters and numbers.")
             return redirect('reset_password', uid64, token)
         elif passwd != cpasswd:
             messages.error(request, "Passwords not matching !")
             return redirect('reset_password', uid64, token)
         else:
             instance = get_object_or_404(User, id=uid)
-            form = UserPassUpdateForm(request.POST or None, instance=instance)
-            if form.is_valid():
-                user = form.save()
-                user.set_password(passwd)
-                user.save()
-                messages.success(request, "Password reseted successfully. Try login.")
-                return redirect('home')
+            captcha = CaptchaForm(request.POST)
+            if captcha.is_valid():
+                form = UserPassUpdateForm(request.POST or None, instance=instance)
+                if form.is_valid():
+                    user = form.save()
+                    user.set_password(passwd)
+                    user.save()
+                    messages.success(request, "Password reseted successfully. Try login.")
+                    return redirect('home')
+                else:
+                    messages.error(request, "Something went wrong. Try again.")
+                    return redirect('reset_password', uid64, token)
             else:
-                messages.success(request, "Something went wrong. Try again.")
+                messages.error(request, "Wrong Captcha")
                 return redirect('reset_password', uid64, token)
     else:
         try:
             uid =force_str(urlsafe_base64_decode(uid64))
             myuser = User.objects.get(pk=uid)
+            cap_form = CaptchaForm()
         except(TypeError, ValueError, OverflowError, User.DoesNotExist):
             myuser = None
         
         if myuser is not None and generate_token.check_token(myuser, token):
-            return render(request, 'users/reset_pass.html', {'current_year':current_year, 'uid':uid64, 'token':token,})
+            return render(request, 'users/reset_pass.html', {'current_year':current_year, 'uid':uid64, 'token':token, 'form':cap_form,})
     
 
 def signout(request):
@@ -140,6 +164,21 @@ def signup(request):
         email = request.POST['email']
         passwd = request.POST['password']
         cpasswd = request.POST['cpassword']
+        is_alpha = False
+        is_num = False
+        is_upper = False
+        is_lower = False
+        is_special = False
+
+        for x in passwd:
+            if x.isalpha():
+                is_alpha = True
+                if x.isupper() and is_upper == False:
+                    is_upper = True
+                elif x.islower() and is_lower == False:
+                    is_lower = True
+            elif x.isnumeric() and is_num == False:
+                is_num = True
 
         if User.objects.filter(username=username):
             messages.error(request, "Username already exists. Please use another one.")
@@ -153,51 +192,60 @@ def signup(request):
         elif len(passwd)<8:
             messages.error(request, "Password should have atleast 8 characters.")
             return redirect('signup')
+        elif is_alpha != True or is_num != True or is_upper != True or is_lower != True:
+            messages.error(request, "Password must be a combination of upper case, lower case letters and numbers.")
+            return redirect('signup')
         elif passwd != cpasswd:
             messages.error(request, "Passwords not matching !")
             return redirect('signup')
         else:
-            form = UsersForm(request.POST or None)
-            if form.is_valid():
-                form.save()
-                notify = Notifications(to='admin', subject='new_user', status=1)
-                notify.save()
-                myuser = User.objects.create_user(username, email, passwd)
-                myuser.first_name = firstname
-                myuser.last_name = lastname
-                myuser.is_active = False
-                myuser.save()
-                messages.success(request, "Your Account has been successfully created. We've send you a\
-                 confirmation email. Please confirm your email inorder to activate your account.")
-        
-                # Welcome Email
-                subject = "Welcome to Quiz App"
-                message = "Hello " + myuser.first_name + " !! \n" + "Welcome to Quiz App ! \nThank you for visting our website.\nWe've send you a confirmation email. Please confirm your email id inorder to activate your account.\n\nRegards,\nQUIZ APP Administrator"
-                from_email = settings.EMAIL_HOST_USER
-                to_list = [myuser.email]
-                send_mail(subject, message, from_email, to_list, fail_silently=True)
+            captcha = CaptchaForm(request.POST)
+            if captcha.is_valid():
+                form = UsersForm(request.POST or None)
+                if form.is_valid():
+                    form.save()
+                    notify = Notifications(to='admin', subject='new_user', status=1)
+                    notify.save()
+                    myuser = User.objects.create_user(username, email, passwd)
+                    myuser.first_name = firstname
+                    myuser.last_name = lastname
+                    myuser.is_active = False
+                    myuser.save()
+                    messages.success(request, "Your Account has been successfully created. We've send you a\
+                    confirmation email. Please confirm your email inorder to activate your account.")
+            
+                    # Welcome Email
+                    subject = "Welcome to Quiz App"
+                    message = "Hello " + myuser.first_name + " !! \n" + "Welcome to Quiz App ! \nThank you for visting our website.\nWe've send you a confirmation email. Please confirm your email id inorder to activate your account.\n\nRegards,\nQUIZ APP Administrator"
+                    from_email = settings.EMAIL_HOST_USER
+                    to_list = [myuser.email]
+                    send_mail(subject, message, from_email, to_list, fail_silently=True)
 
-                # Confirmation Email
-                current_site = get_current_site(request)
-                email_sub = "Confirm your Email"
-                message1 = render_to_string("users/email_confirmation.html",{
-                    'user' : myuser.first_name,
-                    'domain' : current_site.domain,
-                    'uid' : urlsafe_base64_encode(force_bytes(myuser.pk)),
-                    'token' : generate_token.make_token(myuser),
-                })
-                email = EmailMessage(
-                    email_sub,
-                    message1,
-                    settings.EMAIL_HOST_USER,
-                    [myuser.email],
-                )
-                email.fail_silently=True
-                email.send()
+                    # Confirmation Email
+                    current_site = get_current_site(request)
+                    email_sub = "Confirm your Email"
+                    message1 = render_to_string("users/email_confirmation.html",{
+                        'user' : myuser.first_name,
+                        'domain' : current_site.domain,
+                        'uid' : urlsafe_base64_encode(force_bytes(myuser.pk)),
+                        'token' : generate_token.make_token(myuser),
+                    })
+                    email = EmailMessage(
+                        email_sub,
+                        message1,
+                        settings.EMAIL_HOST_USER,
+                        [myuser.email],
+                    )
+                    email.fail_silently=True
+                    email.send()
 
-                return redirect('home')
+                    return redirect('home')
+            else:
+                messages.error(request, "Wrong Captcha")
+                return redirect('signup')
     else:
-        return render(request, 'signup.html', {'current_year': current_year,})
+        cap_form = CaptchaForm()
+        return render(request, 'signup.html', {'current_year': current_year, 'form':cap_form,})
 
 def activate(request, uid64, token):
     try:
@@ -209,7 +257,9 @@ def activate(request, uid64, token):
     if myuser is not None and generate_token.check_token(myuser, token):
         myuser.is_active = True
         myuser.save()
-        login(request, myuser)
+        activate = Users.objects.get(email=myuser.email)
+        activate.status = 'activated'
+        activate.save()
         messages.success(request, "Account activated successfully. You can now login.")        
         return redirect('home')
     else:
