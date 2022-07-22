@@ -1,0 +1,216 @@
+body {
+    background: #d4ebfc;
+}
+
+.navbar {
+    box-shadow: 1px 1px 1px 1px #f2f5f7;
+}
+
+#feedbacks {
+    margin-top: 8%;
+    background: #fafafa;
+    box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, .5);
+}
+
+footer {
+    box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, .2);
+    background: #fafafa;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+.divider:after,
+.divider:before {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: #eee;
+}
+
+.h-custom {
+    height: calc(100% - 73px);
+}
+
+@media (max-width: 450px) {
+    .h-custom {
+        height: 100%;
+    }
+}
+
+/* Feedbacks */
+
+.deals-item {
+    box-sizing: content-box;
+    min-height: 200px;
+    border-color: #d4ebfc;
+}
+
+.swiper-slide .card {
+    color: black;
+    position: relative;
+    overflow: hidden;
+    margin: 0 auto;
+    box-sizing: border-box;
+    box-shadow: 0 5px 5px rgba(0, 0, 0, .5)
+}
+
+.swiper-slide .card .layer {
+    z-index: 1;
+    position: absolute;
+    top: calc(100% - 2px);
+    height: 100%;
+    width: 100%;
+    left: 0;
+    transition: 0.5s;
+    background: #d4ebfc;
+}
+
+.swiper-slide .card .comment {
+    z-index: 2;
+    position: relative;
+}
+
+.swiper-slide .card:hover .layer {
+    top: 0;
+}
+
+.swiper-pagination {
+    margin-top: 20px;
+    position: relative;
+}
+
+.swiper-pagination .swiper-pagination-bullet {
+    width: 12px;
+    height: 12px;
+    background-color: #fff;
+    opacity: 1;
+    border: 1px solid #1bac91;
+}
+
+.swiper-pagination .swiper-pagination-bullet-active {
+    background-color: #d4ebfc;
+}
+
+/* forms */
+
+.form-card .form-field,
+.form-card .form-lnamefield {
+    position: relative;
+    margin: 32px 0;
+    background-color: #d4ebfc;
+}
+
+.form-card .form-field .input-text,
+.form-card .form-lnamefield .input-text {
+    height: 100%;
+    width: 100%;
+    border: none;
+    font-size: 17px;
+    background-color: #d4ebfc;
+    display: block;
+    line-height: 26px;
+    font-weight: 400;
+    border-bottom: 2px solid silver;
+}
+
+label.error {
+    color: red;
+}
+
+.form-card .form-field .form-label,
+.form-card .form-lnamefield .form-label {
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    font-size: 20px;
+    color: grey;
+    pointer-events: none;
+    transition: all 0.3s ease;
+}
+
+.form-lnamefield input::placeholder {
+    color: #d4ebfc;
+}
+
+.form-field input:focus~.form-label,
+.form-field input:valid~.form-label {
+    transform: translateY(-5vh);
+    font-size: 15px;
+    color: #4158d0;
+}
+
+.form-lnamefield input:focus~.form-label {
+    transform: translateY(-5vh);
+    font-size: 15px;
+    color: #4158d0;
+}
+
+.form-lnamefield input:not(:placeholder-shown)~.form-label {
+    transform: translateY(-5vh);
+    font-size: 15px;
+    color: #4158d0;
+}
+
+.form-card .form-field .underline,
+.form-card .form-lnamefield .underline {
+    position: absolute;
+    bottom: 0px;
+    height: 2px;
+    width: 100%;
+}
+
+.form-field .underline:before,
+.form-lnamefield .underline:before {
+    position: absolute;
+    content: "";
+    height: 100%;
+    width: 100%;
+    background: #4158d0;
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.form-field input:focus~.underline:before,
+.form-field input:valid~.underline:before,
+.form-lnamefield input:focus~.underline:before,
+.form-lnamefield input:not(:placeholder-shown)~.underline:before {
+    transform: scaleX(1);
+}
+
+/* user_dashboard */
+.q-card {
+    border-radius: 6px;
+    background-color: #d4ebfc;
+    box-shadow: .1rem .1rem .1rem .1rem gray;
+    position: relative;
+    overflow: hidden;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+.q-card .q-layer {
+    z-index: 1;
+    position: absolute;
+    top: calc(100% - 2px);
+    height: 100%;
+    width: 100%;
+    left: 0;
+    transition: 0.5s;
+    background: #fff;
+}
+
+.q-card:hover .q-layer {
+    top: 0;
+}
+
+.q-card .q-content {
+    z-index: 2;
+    position: relative;
+}

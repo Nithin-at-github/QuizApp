@@ -3,55 +3,57 @@
 
 <section id="view">
     <div class="container">
-        <h2 align="center">My Feedbacks</h2>
+        <h2 class="text-center">My Feedbacks</h2>
         <br>
-        <div class="row">
+        <div class=" row">
             {% if feedbacks %}
             {% for item in feedbacks %}
             {% if forloop.counter|divisibleby:2 == 0 %}
             <div class="w-100"></div><br>
             {% endif %}
-            <div class="col-sm">
-                {% if item.status == 'edited' %}
-                <h4>Me<p style="font-size: 12px; float: right;">{{ item.date }}&nbsp;&nbsp;&nbsp;</p>
-                </h4>
-                <p style="font-size: 15px;">( edited )</p>
-                {% else %}
-                <h4>Me<p style="font-size: 12px; float: right;">{{ item.date }}&nbsp;&nbsp;&nbsp;</p>
-                </h4>
-                {% endif %}
-                {% if feed_id == item.id %}
-                <form method="post" action="{% url 'update_feedback' user_id item.id %}">
-                    {% csrf_token %}
-                    <input type="hidden" name="id" value="{{ item.id }}">
-                    <input type="hidden" name="status" value="edited">
-                    <input type="hidden" name="date" value="{{ date }}">
-                    <textarea class="form-control" rows="4" cols="30" name="feedback">{{ item.feedback }}</textarea>
-                    <br><input type="submit" name="update" class="btn btn-primary btn-sm" value="Update">
-                </form>
-                {% else %}
-                <p>{{ item.feedback }}</p>
-                <form method="post" action="{% url 'user_view_feedbacks' user_id %}">
-                    {% csrf_token %}
-                    <input type="hidden" name="id" value="{{ item.id }}">
-                    <button type="submit" class="btn btn-primary btn-sm" title="Edit Feedback"><i
-                            class="bi bi-pencil-square"></i></button>
-                    <a style="float: right;" href="{% url 'delete_feedback' user_id item.id %}"
-                        class="btn btn-danger btn-sm" title="Delete Feedback"
-                        onclick="return confirm('Are you sure ? This action can`t be undone !')"><i
-                            class="bi bi-trash3"></i></a>
-                    {% if item.reply %}
-                    <div id="reply" style="margin-left: 50px;">
-                        {% if item.reply_status == 'edited' %}
-                        <h6><i class="fa fa-reply" aria-hidden="true"></i> Admin ( edited )</h6>
-                        {% else %}
-                        <h6><i class="fa fa-reply" aria-hidden="true"></i> Admin</h6>
+            <div class="col-sm card m-1">
+                <div class="card-body">
+                    {% if item.status == 'edited' %}
+                    <h4>Me<p style="font-size: 12px; float: right;">{{ item.date }}&nbsp;&nbsp;&nbsp;</p>
+                    </h4>
+                    <p style="font-size: 15px;">( edited )</p>
+                    {% else %}
+                    <h4>Me<p style="font-size: 12px; float: right;">{{ item.date }}&nbsp;&nbsp;&nbsp;</p>
+                    </h4>
+                    {% endif %}
+                    {% if feed_id == item.id %}
+                    <form method="post" action="{% url 'update_feedback' user_id item.id %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="id" value="{{ item.id }}">
+                        <input type="hidden" name="status" value="edited">
+                        <input type="hidden" name="date" value="{{ date }}">
+                        <textarea class="form-control" rows="4" cols="30" name="feedback">{{ item.feedback }}</textarea>
+                        <br><input type="submit" name="update" class="btn btn-primary btn-sm" value="Update">
+                    </form>
+                    {% else %}
+                    <p>{{ item.feedback }}</p>
+                    <form method="post" action="{% url 'user_view_feedbacks' user_id %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="id" value="{{ item.id }}">
+                        <button type="submit" class="btn btn-primary btn-sm" title="Edit Feedback"><i
+                                class="bi bi-pencil-square"></i></button>
+                        <a style="float: right;" href="{% url 'delete_feedback' user_id item.id %}"
+                            class="btn btn-danger btn-sm" title="Delete Feedback"
+                            onclick="return confirm('Are you sure ? This action can`t be undone !')"><i
+                                class="bi bi-trash3"></i></a>
+                        {% if item.reply %}
+                        <div id="reply" style="margin-left: 50px;">
+                            {% if item.reply_status == 'edited' %}
+                            <h6><i class="fa fa-reply" aria-hidden="true"></i> Admin ( edited )</h6>
+                            {% else %}
+                            <h6><i class="fa fa-reply" aria-hidden="true"></i> Admin</h6>
+                            {% endif %}
+                            <p>{{ item.reply }}</p>
+                        </div>
                         {% endif %}
-                        <p>{{ item.reply }}</p>
-                    </div>
-                    {% endif %}
-                    {% endif %}
-                </form>
+                        {% endif %}
+                    </form>
+                </div>
             </div>
             {% endfor %}
             {% else %}

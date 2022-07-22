@@ -3,7 +3,7 @@
 {% block content %}
 
 <div class="container">
-    <h2 align="center">User Feedbacks</h2>
+    <h2 class="text-center">User Feedbacks</h2>
     <br>
     <div class="row">
         {% if feedbacks %}
@@ -11,26 +11,28 @@
         {% if forloop.counter|divisibleby:2 == 0 %}
         <div class="w-100"></div><br>
         {% endif %}
-        <div class="col-sm">
-            {% if item.status == 'edited' %}
-            <h4>{{ item.user_name }}<p style="font-size: 12px; float: right;">{{ item.date }}&nbsp;&nbsp;&nbsp;</p>
-            </h4>
-            <p style="font-size: 15px;">( edited )</p>
-            {% else %}
-            <h4>{{ item.user_name }}<p style="font-size: 12px; float: right;">{{ item.date }}&nbsp;&nbsp;&nbsp;</p>
-            </h4>
-            {% endif %}
-            <p>{{ item.feedback }}</p>
-            {% if item.reply %}
-            <div id="reply" style="margin-left: 50px;">
-                {% if item.reply_status == 'edited' %}
-                <h6><i class="fa fa-reply" aria-hidden="true"></i> Admin ( edited )</h6>
+        <div class="card col-sm m-1">
+            <div class="card-body">
+                {% if item.status == 'edited' %}
+                <h4>{{ item.user_name }}<p style="font-size: 12px; float: right;">{{ item.date }}&nbsp;&nbsp;&nbsp;</p>
+                </h4>
+                <p style="font-size: 15px;">( edited )</p>
                 {% else %}
-                <h6><i class="fa fa-reply" aria-hidden="true"></i> Admin</h6>
+                <h4>{{ item.user_name }}<p style="font-size: 12px; float: right;">{{ item.date }}&nbsp;&nbsp;&nbsp;</p>
+                </h4>
                 {% endif %}
-                <p>{{ item.reply }}</p>
+                <p>{{ item.feedback }}</p>
+                {% if item.reply %}
+                <div id="reply" style="margin-left: 50px;">
+                    {% if item.reply_status == 'edited' %}
+                    <h6><i class="fa fa-reply" aria-hidden="true"></i> Admin ( edited )</h6>
+                    {% else %}
+                    <h6><i class="fa fa-reply" aria-hidden="true"></i> Admin</h6>
+                    {% endif %}
+                    <p>{{ item.reply }}</p>
+                </div>
+                {% endif %}
             </div>
-            {% endif %}
         </div>
         {% endfor %}
         {% else %}

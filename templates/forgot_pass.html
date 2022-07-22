@@ -3,33 +3,49 @@
 {% block content %}
 
 <section>
-    <h2 align="center">Forgot Password ?</h2>
+    <h2 class="text-center">Forgot Password ?</h2><br>
     <div class="container-fluid h-custom">
         <div class="row d-flex justify-content-center align-items-center h-100">
-            <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
-                <form method="post" action="{% url 'forgot_password' %}">
-                    {% csrf_token %}
-                    <div class="divider d-flex align-items-center my-4">
-                        <p><b>Enter your username.<br>You'll receive a link to reset
-                                password to your registered email id.</b></p>
-                    </div>
+            <div class="col-md-8 col-lg-6 col-xl-4 ">
+                <div class="card form-card">
+                    <div class="card-body">
+                        <form method="post" action="{% url 'forgot_password' %}" id="forgotpassForm">
+                            {% csrf_token %}
+                            <div class="divider d-flex align-items-center my-4">
+                                <p><b>Enter your username.<br>You'll receive a link to reset
+                                        password to your registered email id.</b></p>
+                            </div>
 
-                    <div class="form-outline mb-4">
-                        <input type="text" id="form3Example3" name="uname" class="form-control form-control-lg"
-                            placeholder="Enter your username" required />
-                        <label class="form-label" for="form3Example3">Username</label>
+                            <div class="form-field mb-4">
+                                <input type="text" id="uname" name="uname" class="input-text form-control-lg"
+                                    style="background-color: #fff;" required />
+                                <label class="form-label" for="uname">Username</label>
+                                <div class="underline"></div>
+                            </div>
+                            <p id="error" style="color: red;">Username cannot be more than 10 characters.</p>
+                            <div class="text-center text-lg-start mt-4 pt-2">
+                                <button type="submit" id="submit_btn" class="btn btn-outline-primary btn-lg"
+                                    name="submit" style="padding-left: 2.5rem; padding-right: 2.5rem;">Submit</button>
+                            </div>
+                        </form>
                     </div>
-
-                    <div class="text-center text-lg-start mt-4 pt-2">
-                        <button type="submit" class="btn btn-primary btn-lg" name="submit"
-                            style="padding-left: 2.5rem; padding-right: 2.5rem;">Submit</button>
-                    </div>
-
-                </form>
+                </div>
             </div>
         </div>
     </div>
 </section>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#error").hide()
+        $("#forgotpassForm").submit(function (e) {
+            if ($("#uname").val().length > 10) {
+                e.preventDefault()
+                $("#error").show()
+            }
+        })
+    })
+</script>
 
 {% endblock %}
 

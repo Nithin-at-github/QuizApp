@@ -1,0 +1,103 @@
+{% include 'header.html' %}
+{% block content %}
+
+<div class="container">
+    <h2 class="text-center">Account Settings</h2>
+    <br>
+    <div class="card" style="background-color: #d4ebfc;">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-12 col-md-6">
+                    <h3><u>About Me</u></h3><br>
+                    {% if mode %}
+                    <form method="post" action="{% url 'update_user_details' user_id %}">
+                        {% csrf_token %}
+                        <table class="table table-borderless form-card" width="100%">
+                            <tr>
+                                <th>First Name : </th>
+                                <td><input type="text" name="fname" value="{{ user.fname}}" class="form-control"
+                                        placeholder="Enter your First Name">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Last Name : </th>
+                                <td><input type="text" name="lname" value="{{ user.lname}}" class="form-control"
+                                        placeholder="Enter your Last Name">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Email id: </th>
+                                <td><input type="email" name="email" value="{{ user.email}}" class="form-control"
+                                        placeholder="Enter your Email id">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-center" colspan="2">
+                                    <input type="submit" class="btn btn-sm btn-primary" name="update-btn"
+                                        value="Update">
+                                </td>
+                            </tr>
+                        </table><br>
+                    </form>
+                    {% else %}
+                    <table class="table table-borderless" width="100%">
+                        <tr>
+                            <th>First Name : </th>
+                            <td>{{ user.fname }}</td>
+                        </tr>
+                        <tr>
+                            <th>Last Name : </th>
+                            <td>{{ user.lname }}</td>
+                        </tr>
+                        <tr>
+                            <th>Email id : </th>
+                            <td>{{ user.email }}</td>
+                        </tr>
+                        <tr>
+                            {% if mode %}
+                            <td></td>
+                            {% else %}
+                            <td>
+                                <form method="post" action="{% url 'user_account' user_id %}">
+                                    {% csrf_token %}
+                                    <input type="submit" class="btn btn-sm btn-primary" name="update"
+                                        value="Edit Details">
+                                </form>
+                            </td>
+                            {% endif %}
+                        </tr>
+                    </table>
+                    {% endif %}
+                    <h3><u>Change Login Password</u></h3><br>
+                    <table width="100%">
+                        <tr>
+                            <form method="post" action="{% url 'user_change_password' user_id %}">
+                                {% csrf_token %}
+                                <td>
+                                    <input type="password" name="ex-password" class="form-control"
+                                        placeholder="Enter current password" required>
+                                </td>
+                                <td>
+                                    <input type="submit" class="btn btn-sm btn-primary" name="ch-pass" value="Continue">
+                                </td>
+                            </form>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-12 col-md-6">
+                    <br>
+                    <h3 class="text-center"><u>My Activity</u></h3><br>
+                    <ul class="list-group">
+                        {% for item in activity%}
+                        <li class="list-group-item" style="background-color: #d4ebfc;">{{ item.title }}</li>
+                        <br>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div><br>
+    </div>
+</div>
+
+{% endblock %}
+{% include 'footer.html' %}

@@ -2,90 +2,75 @@
 {% load static %}
 
 {% block content %}
-<style>
-    .divider:after,
-    .divider:before {
-        content: "";
-        flex: 1;
-        height: 1px;
-        background: #eee;
-    }
-
-    .h-custom {
-        height: calc(100% - 73px);
-    }
-
-    @media (max-width: 450px) {
-        .h-custom {
-            height: 100%;
-        }
-    }
-</style>
 
 <section>
-    <h2 align="center">Welcome to Quiz App</h2>
+    <h2 class="text-center">Welcome to Quiz App</h2>
     <div class="container-fluid h-custom">
         <div class="row d-flex justify-content-center align-items-center h-100">
             <div class="col-md-9 col-lg-6 col-xl-5">
                 <img src="{% static 'img/logo.webp' %}" class="img-fluid" alt="Sample image">
             </div>
-            <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
-                <form method="post" action="{% url 'signup' %}">
+            <div class="form-card col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+                <form method="post" action="{% url 'signup' %}" id="signupForm">
                     {% csrf_token %}
                     <div class="divider d-flex align-items-center my-4">
                         <p class="text-center fw-bold mx-3 mb-0">REGISTER YOURSELF</p>
                     </div>
 
                     <!-- Username input -->
-                    <div class="form-outline mb-1">
-                        <input type="text" id="form3Example3" name="uname" class="form-control form-control-lg"
-                            placeholder="Enter a Username" required />
-                        <label class="form-label" for="form3Example3">Username</label>
+                    <div class="form-field mb-1">
+                        <input type="text" id="uname" name="uname" class="input-text form-control-lg" required />
+                        <label class="form-label" for="uname">Username</label>
+                        <div class="underline"></div>
                     </div>
 
                     <!-- Firstname input -->
-                    <div class="form-outline mb-1">
-                        <input type="text" id="form3Example3" name="fname" class="form-control form-control-lg"
-                            placeholder="Enter your firstname" required />
-                        <label class="form-label" for="form3Example3">First Name</label>
+                    <div class="form-field mb-1">
+                        <input type="text" id="fname" name="fname" class="input-text form-control-lg" required />
+                        <label class="form-label" for="fname">First Name</label>
+                        <div class="underline"></div>
                     </div>
 
                     <!-- Lastname input -->
-                    <div class="form-outline mb-1">
-                        <input type="text" id="form3Example3" name="lname" class="form-control form-control-lg"
-                            placeholder="Enter your lastname" />
-                        <label class="form-label" for="form3Example3">Last Name</label>
+                    <div class="form-lnamefield mb-1">
+                        <input type="text" id="lname" name="lname" class="input-text form-control-lg"
+                            placeholder="Last Name" />
+                        <label class="form-label" id="lname_label" for="lname">Last Name</label>
+                        <div class="underline"></div>
                     </div>
 
                     <!-- Email input -->
-                    <div class="form-outline mb-1">
-                        <input type="email" id="form3Example3" name="email" class="form-control form-control-lg"
-                            placeholder="Enter a valid email address" required />
-                        <label class="form-label" for="form3Example3">Email Address</label>
+                    <div class="form-field mb-1">
+                        <input type="email" id="email" name="email" class="input-text form-control-lg" required />
+                        <label class="form-label" for="email">Email Address</label>
+                        <div class="underline"></div>
                     </div>
 
                     <!-- Password input -->
-                    <div class="form-outline mb-1">
-                        <input type="password" id="form3Example4" name="password" class="form-control form-control-lg"
-                            placeholder="Enter password" required />
-                        <label class="form-label" for="form3Example4">Password</label>
-                        <label class="form-label" style="font-size: 12px;">
+                    <div class="form-field mb-1">
+                        <input type="password" id="password" name="password" class="input-text form-control-lg"
+                            required />
+                        <label class="form-label" for="password">Password</label>
+                        <div class="underline"></div>
+                        <!-- <label class="form-label" style="font-size: 12px;">
                             <i style="color: red;" class="fa fa-sm fa-asterisk" aria-hidden="true"></i>
                             Password must be a combination of upper case, lower case letters and numbers.
-                        </label>
+                        </label> -->
                     </div>
 
-                    <div class="form-outline mb-1">
-                        <input type="password" id="form3Example4" name="cpassword" class="form-control form-control-lg"
-                            placeholder="Confirm password" required />
-                        <label class="form-label" for="form3Example4">Confirm Password</label>
+                    <div class="form-field mb-1">
+                        <input type="password" id="cpassword" name="cpassword" class="input-text form-control-lg"
+                            required />
+                        <label class="form-label" for="cpassword">Confirm Password</label>
+                        <div class="underline"></div>
                     </div><br>
-                    <div class="form-outline mb-1">
+                    <div class="mb-1">
                         {{ form.captcha }}<br>
-                        <label class="form-label" for="form3Example4">Enter Captcha Code</label>
+                        <label class="form-label" for="captcha" style="font-size: 20px; color: grey;">
+                            Enter Captcha Code</label>
                     </div>
                     <div class="text-center text-lg-start mt-2 pt-2">
-                        <button type="submit" class="btn btn-primary btn-lg" name="signup"
+                        <button type="submit" class="btn btn-outline-primary btn-lg" name="signup"
                             style="padding-left: 2.5rem; padding-right: 2.5rem;">Register</button>
                     </div>
                 </form>
@@ -93,6 +78,50 @@
         </div>
     </div>
 </section>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $.validator.setDefaults({
+            highlight: function (element) {
+                $(".form-label").css({ "display": "none" })
+            },
+            unhighlight: function (element) {
+                $(".form-label").css({ "display": "block" })
+            }
+        });
+        $.validator.addMethod("pwcheck", function (value) {
+            return /^[A-Za-z0-9\d=!\-@._*]*$/.test(value) // consists of only these
+                && /[A-Z]/.test(value) // has an uppercase letter
+                && /[a-z]/.test(value) // has a lowercase letter
+                && /\d/.test(value) // has a digit
+        });
+        $("#signupForm").validate({
+            rules: {
+                uname: {
+                    maxlength: 10
+                },
+                password: {
+                    minlength: 8,
+                    pwcheck: true
+                },
+                cpassword: {
+                    equalTo: "#password"
+                }
+            },
+            messages: {
+                uname: {
+                    maxlength: "Username cannot be more than 10 characters."
+                },
+                password: {
+                    pwcheck: "Password must be a combination of uppercase, lowercase letters and numbers."
+                },
+                cpassword: {
+                    equalTo: "Password not matching"
+                }
+            }
+        })
+    })
+</script>
+
 {% endblock %}
 
 {% include 'footer.html' %}

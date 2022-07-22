@@ -2,34 +2,18 @@
 {% include 'header.html' %}
 
 {% block content %}
-<style>
-    .divider:after,
-    .divider:before {
-        content: "";
-        flex: 1;
-        height: 1px;
-        background: #eee;
-    }
+<!-- <style>
 
-    .h-custom {
-        height: calc(100% - 73px);
-    }
-
-    @media (max-width: 450px) {
-        .h-custom {
-            height: 100%;
-        }
-    }
-</style>
+</style> -->
 
 <section id="home">
-    <h2 align="center">Welcome to Quiz App</h2>
+    <h2 class="text-center">Welcome to Quiz App</h2>
     <div class="container-fluid h-custom">
         <div class="row d-flex justify-content-center align-items-center h-100">
             <div class="col-md-9 col-lg-6 col-xl-5">
                 <img src="{% static 'img/logo.webp' %}" class="img-fluid" alt="Sample image">
             </div>
-            <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+            <div class="form-card col-md-8 col-lg-6 col-xl-4 offset-xl-1">
                 <form method="post" action="{% url 'home' %}">
                     {% csrf_token %}
                     <div class="divider d-flex align-items-center my-4">
@@ -37,17 +21,19 @@
                     </div>
 
                     <!-- Email input -->
-                    <div class="form-outline mb-4">
-                        <input type="text" id="form3Example3" name="uname" class="form-control form-control-lg"
-                            placeholder="Enter your username" required />
+                    <div class="form-field mb-4">
+                        <input type="text" id="form3Example3" name="uname" class="form-control-lg input-text"
+                            required />
                         <label class="form-label" for="form3Example3">Username</label>
+                        <div class="underline"></div>
                     </div>
 
                     <!-- Password input -->
-                    <div class="form-outline mb-3">
-                        <input type="password" id="form3Example4" name="password" class="form-control form-control-lg"
-                            placeholder="Enter password" required />
+                    <div class="form-field mb-3">
+                        <input type="password" id="form3Example4" name="password" class="form-control-lg input-text"
+                            required />
                         <label class="form-label" for="form3Example4">Password</label>
+                        <div class="underline"></div>
                     </div>
 
                     <div class="d-flex justify-content-between align-items-center">
@@ -55,7 +41,7 @@
                     </div>
 
                     <div class="text-center text-lg-start mt-4 pt-2">
-                        <button type="submit" class="btn btn-primary btn-lg" name="login"
+                        <button type="submit" class="btn btn-outline-primary btn-lg" name="login"
                             style="padding-left: 2.5rem; padding-right: 2.5rem;">Login</button>
                         <p class="small fw-bold mt-2 pt-1 mb-0">Don't have an account? <a href="{% url 'signup' %}"
                                 class="link-danger"> Register</a></p>
@@ -65,53 +51,75 @@
             </div>
         </div>
     </div>
+    <br>
 </section>
 
 <section id="feedbacks">
-    <br><br><br>
-    <h2 align="center">User Feedbacks</h2>
+    <br><br>
+    <h2 class="text-center">User Feedbacks</h2>
     <br>
     <div class="container">
-        <div class="row">
-            {% if feedbacks %}
-            {% for item in feedbacks %}
-            {% if forloop.counter|divisibleby:2 == 0 %}
-            <div class="w-100"></div><br>
-            {% endif %}
-            {% if forloop.counter > 4 %}
-            <div>
-                <p><a href="{% url 'feedbacks' %}"><b>See more</b></a></p>
-            </div>
-            {{ break }}
-            {% else %}
-            <div class="col-sm">
-                {% if item.status == 'edited' %}
-                <h4>{{ item.user_name }}<p style="font-size: 12px; float: right;">{{ item.date }}&nbsp;&nbsp;&nbsp;</p>
-                </h4>
-                <p style="font-size: 15px;">( edited )</p>
-                {% else %}
-                <h4>{{ item.user_name }}<p style="font-size: 12px; float: right;">{{ item.date }}&nbsp;&nbsp;&nbsp;</p>
-                </h4>
+        <div class="testimonials-slider swiper-container mt-2" data-aos="fade-up" data-aos-delay="100">
+            <div class="swiper-wrapper">
+                {% if feedbacks %}
+                {% for item in feedbacks %}
+                {% if forloop.counter|divisibleby:2 == 0 %}
+                <div class="w-100"></div><br>
                 {% endif %}
-                <p>{{ item.feedback }}</p>
-                {% if item.reply %}
-                <div id="reply" style="margin-left: 50px;">
-                    {% if item.reply_status == 'edited' %}
-                    <h6><i class="fa fa-reply" aria-hidden="true"></i> Admin ( edited )</h6>
-                    {% else %}
-                    <h6><i class="fa fa-reply" aria-hidden="true"></i> Admin</h6>
-                    {% endif %}
-                    <p>{{ item.reply }}</p>
+                {% if forloop.counter > 4%}
+                <div>
+                    <div class="swiper-slide">
+                        <div class="deals-item card me-4 h-100">
+                            <div class="card-body">
+                                <p><a href="{% url 'feedbacks' %}" class="btn btn-outline-primary btn-sm"><b>See
+                                            more</b></a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+                {{ break }}
+                {% else %}
+                <div class="swiper-slide">
+                    <div class="deals-item card h-100">
+                        <div class="card-body">
+                            <div class="layer"></div>
+                            <div class="comment">
+                                {% if item.status == 'edited' %}
+                                <h4>{{ item.user_name }}<p style="font-size: 12px; float: right;">
+                                        {{ item.date}}&nbsp;&nbsp;&nbsp;</p>
+                                </h4>
+                                <p style="font-size: 15px;">( edited )</p>
+                                {% else %}
+                                <h4>{{ item.user_name }}<p style="font-size: 12px; float: right;">
+                                        {{ item.date}}&nbsp;&nbsp;&nbsp;</p>
+                                </h4>
+                                {% endif %}
+                                <p>{{ item.feedback }}</p>
+                                {% if item.reply %}
+                                <div id="reply" style="margin-left: 50px;">
+                                    {% if item.reply_status == 'edited' %}
+                                    <h6><i class="fa fa-reply" aria-hidden="true"></i> Admin ( edited )</h6>
+                                    {% else %}
+                                    <h6><i class="fa fa-reply" aria-hidden="true"></i> Admin</h6>
+                                    {% endif %}
+                                    <p>{{ item.reply }}</p>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- End deals item -->
+                {% endif %}
+                {% endfor %}
+                {% else %}
+                <p>No Feedbacks till now :(</p>
                 {% endif %}
             </div>
-            {% endif %}
-            {% endfor %}
-            {% else %}
-            <p>No Feedbacks till now :(</p>
-            {% endif %}
+            <div class="swiper-pagination"></div>
         </div>
     </div>
+    <br><br>
 </section>
 
 <section id="contact" class="section-bg">
@@ -127,11 +135,14 @@
                     </div>
                     <div class="col-md-6">
                         <div id="contact-section" class="container">
-                            <form class="mb-5" onsubmit="SendMessage()" method="post" action="{% url 'contact' %}">
-                                {% csrf_token %}
+                            <form class="mb-5" id="contactForm" action="">
                                 <div class="row">
                                     <input type="text" class="form-control form-control-lg" name="name" id="name"
                                         required placeholder="Your name">
+                                </div>
+                                <div class="row">
+                                    <input type="email" class="form-control form-control-lg" name="email" id="email"
+                                        required placeholder="Your email id">
                                 </div>
                                 <div class="row">
                                     <input type="text" class="form-control form-control-lg" name="subject" id="subject"
@@ -151,19 +162,62 @@
             </div>
         </div>
     </div>
-
 </section>
 
 <script type="text/javascript">
-    function SendMessage() {
-        var name = document.getElementById("name").value;
-        var subject = document.getElementById("subject").value;
-        var message = document.getElementById("message").value;
-        var email = "quizapp24x7@gmail.com";
-        var mailto_link = 'mailto:' + email + "?subject=" + subject + "&body=I am " + name + "%0D%0A%0D%0A" + message + "%0D%0A";
+    new Swiper('.testimonials-slider', {
+        speed: 600,
+        loop: true,
+        autoplay: {
+            delay: 5000,
+            disableOnInteraction: false
+        },
+        slidesPerView: 'auto',
+        pagination: {
+            el: '.swiper-pagination',
+            type: 'bullets',
+            clickable: true
+        },
+        breakpoints: {
+            320: {
+                slidesPerView: 1,
+                spaceBetween: 20
+            },
 
-        window.open(mailto_link, 'emailWindow')
-    }
+            1200: {
+                slidesPerView: 2,
+                spaceBetween: 20
+            }
+        }
+    });
+
+    // function SendMessage() {
+    //     var name = document.getElementById("name").value;
+    //     var subject = document.getElementById("subject").value;
+    //     var message = document.getElementById("message").value;
+    //     var email = "quizapp24x7@gmail.com";
+    //     var mailto_link = 'mailto:' + email + "?subject=" + subject + "&body=I am " + name + "%0D%0A%0D%0A" + message + "%0D%0A";
+
+    //     window.open(mailto_link, 'emailWindow')
+    // }
+
+    $("#contactForm").submit((e) => {
+        e.preventDefault()
+        $.ajax({
+            url: "https://script.google.com/macros/s/AKfycbxKfPYDUXkXL_MPAVpuOmsIzcu9K5ar7lXcnfqr/exec",
+            data: $("#contactForm").serialize(),
+            method: "post",
+            success: function (response) {
+                alert("Message sent successfully")
+                window.location.reload()
+                //window.location.href="https://google.com"
+            },
+            error: function (err) {
+                alert("Something Error")
+
+            }
+        })
+    })
 </script>
 
 {% endblock %}

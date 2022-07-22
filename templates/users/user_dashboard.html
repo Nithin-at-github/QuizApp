@@ -5,38 +5,34 @@
     <h2>Hello {{ fname }}, </h2>
     <br>
     <h3>Available Quizzes</h3><br>
-    <div>
+
+    <div class="row">
         {% if quizzes %}
-        <table class="table table-borderless">
-            <thead>
-                <tr>
-                    <th></th>
-                    <th>Title</th>
-                    <th>Total Questions</th>
-                    <th>Time Alloted</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in quizzes %}
-                <tr>
-                    <td>{{ forloop.counter }}</td>
-                    <td>{{ item.title }}</td>
-                    <td>{{ item.tot_questions }}</td>
-                    <td>{{ item.max_time }} min</td>
-
-                    {% if user in item.attendees.all %}
-                    <td> Already attended. </td>
-                    {% else %}
-                    <td>
-                        <a class="btn btn-success btn-sm" href="{% url 'instructions' user_id item.id %}">Attempt</a>
-                    </td>
-                    {% endif %}
-
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        {% for item in quizzes %}
+        <div class="q-card card col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 m-2">
+            <div class="q-layer"></div>
+            <div class="q-content">
+                <div class="card-header">
+                    <b>{{ item.title }}</b>
+                </div>
+                <div class="card-body">
+                    <p>Total Questions : {{ item.tot_questions }}</p>
+                    <p>Time Alloted : {{ item.max_time }} min</p>
+                    <div class="text-center">
+                        {% if user in item.attendees.all %}
+                        <p class="text-success"><b>Already attended</b></p>
+                        {% else %}
+                        <a class="attempt btn btn-outline-success btn-sm"
+                            href="{% url 'instructions' user_id item.id %}">Attempt</a>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="card-footer text-muted">
+                    Date posted : {{ item.date_added }}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
         {% else %}
         <p>No Quizzes available at this time : (</p>
         {% endif %}

@@ -2,32 +2,38 @@
 {% block content %}
 
 <div class="container">
-    <h2 align="center">Check Results</h2>
-    <br>
-    <form method="post" action="{% url 'user_view_results' user_id %}">
-        {% csrf_token %}
-        <div class="row mb-3">
-            <label for="selectquiz" class="col-sm-2 col-form-label">Select Quiz</label>
-            <div class="col-sm-10">
-                <select id="selectquiz" name="quiz" class="form-select" aria-label="Default select example">
-                    <option selected>Select Quiz</option>
-                    {% for item in quizzes %}
-                    <option value="{{ item.title }}-{{ item.date_added }}">{{ item.title }} {{ item.date_added }}
-                    </option>
-                    {% endfor %}
-                </select>
-            </div>
+    <div class="card" style="background-color: #d4ebfc;">
+        <div class="card-body">
+            <h2 class="text-center">Check Results</h2>
+            <br>
+            <form method="post" action="{% url 'user_view_results' user_id %}">
+                {% csrf_token %}
+                <div class="row mb-3">
+                    <label for="selectquiz" class="col-sm-2 col-form-label">Select Quiz</label>
+                    <div class="col-sm-10">
+                        <select id="selectquiz" name="quiz" class="form-select" aria-label="Default select example"
+                            required>
+                            <option value="">Select Quiz</option>
+                            {% for item in quizzes %}
+                            <option value="{{ item.title }}-{{ item.date_added }}">
+                                {{ item.title }} {{ item.date_added}}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="inputcandid" class="col-sm-2 col-form-label">Candidate Id</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="inputcandid" name="candidate_id" required>
+                    </div>
+                </div>
+                <center>
+                    <button type="submit" class="btn btn-primary">Get Result</button>
+                </center>
+            </form>
         </div>
-        <div class="row mb-3">
-            <label for="inputcandid" class="col-sm-2 col-form-label">Candidate Id</label>
-            <div class="col-sm-10">
-                <input type="text" class="form-control" id="inputcandid" name="candidate_id">
-            </div>
-        </div>
-        <center>
-            <button type="submit" class="btn btn-primary">Get Result</button>
-        </center>
-    </form>
+    </div>
 </div>
 
 {% endblock %}

@@ -458,6 +458,7 @@ def add_feedback(request, user_id, rtype='manual'):
                 form.save()
                 notify = Notifications(to='admin', subject='feedback', status=1)
                 notify.save()
+                messages.success(request, "Feedback send successfully.")
                 return redirect('user_dashboard', user.fname, user_id)
         return render(request, 'users/add_feedback.html',{'role':role, 'replycount':replycount, 'name':user.fname, 'rtype':rtype, 'current_year': current_year, 'user_id':user_id, 'uid':uid, 'fullname':fullname, 'date':date,})
     else:
@@ -571,6 +572,79 @@ def user_view_results(request, user_id):
             return render(request, 'users/user_view_results.html', {'role':role, 'replycount':replycount, 'current_year': current_year, 'user_id':user_id, 'name':user.fname, 'quizzes':quizzes})
     else:
         return redirect('home')
+
+@login_required(login_url='home')
+def user_account(request, user_id):
+    if request.session.has_key('uid'):
+        role = 'user'
+        uid = force_str(urlsafe_base64_decode(user_id))
+        user = Users.objects.get(pk=uid)
+        user_inst = get_object_or_404(Users, id=uid)
+        activity =Quizzes.objects.filter(attendees=user_inst)
+        
+        if request.method == 'POST':
+            mode = 'edit'
+            data = {
+                'role': role, 
+                'mode': mode,
+                'current_year': current_year, 
+                'name': user.fname, 
+                'user_id': user_id,
+                'user': user,
+                'activity': activity,
+            }
+            return render(request, 'users/user_account.html', data)
+        else:
+            data = {
+                'role':role, 
+                'current_year': current_year, 
+                'name': user.fname, 
+                'user_id': user_id,
+                'user': user,
+                'activity': activity,
+                }
+            return render(request, 'users/user_account.html', data)
+    else:
+        return redirect('home')
+
+@login_required(login_url='home')
+def update_user_details(request, user_id):
+    if request.session.has_key('uid'):
+        if request.method == 'POST':
+            uid = force_str(urlsafe_base64_decode(user_id))
+            user_inst = get_object_or_404(Users, id=uid)
+            updateform = UsersForm(request.POST or None, instance=user_inst)
+            if updateform.is_valid():
+                updateform.save()
+                messages.success(request, "Details updated successfully")
+                return redirect('user_account', user_id)
+            else:
+                messages.error(request, "Something went wrong, Please try again")
+                return redirect('user_account', user_id)
+    else:
+        return redirect('home')
+
+@login_required(login_url='home')
+def user_change_password(request, user_id):
+    uid = force_str(urlsafe_base64_decode(user_id))
+    # normal users model
+    users = Users.objects.get(pk=uid)
+    # django auntentication user model
+    user = User.objects.get(email=users.email)
+
+    if request.method == 'POST':
+        username = user.username
+        password = request.POST['ex-password']
+
+        check = authenticate(username=username, password=password)
+
+        if check is not None:
+            uid64 = urlsafe_base64_encode(force_bytes(user.pk))
+            token = generate_token.make_token(user)
+            return redirect('reset_password', uid64, token)
+        else:
+            messages.error(request, "Please enter the correct password.")
+            return redirect('user_account', user_id)
 
 def render_to_pdf(template_src, context_dict={}):
     template = get_template(template_src)
