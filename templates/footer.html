@@ -24,6 +24,21 @@
     </footer>
 </div>
 {% load static %}
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        window.setTimeout(function () {
+            $(".alert").fadeTo(1000, 0).slideUp(1000, function () {
+                $(this).remove();
+            });
+        }, 5000);
+
+    });
+
+</script>
+
 <script src="{% static 'js/loader.js' %}"></script>
 <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.js"></script>
 

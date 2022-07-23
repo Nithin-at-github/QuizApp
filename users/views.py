@@ -186,7 +186,7 @@ def signup(request):
         elif len(username)>10:
             messages.error(request, "Username cannot be more than 10 characters.")
             return redirect('signup')
-        elif Users.objects.filter(email=email):
+        elif User.objects.filter(email=email):
             messages.error(request, "Email already registered. Please use another one.")
             return redirect('signup')
         elif len(passwd)<8:

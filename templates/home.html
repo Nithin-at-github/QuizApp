@@ -2,18 +2,15 @@
 {% include 'header.html' %}
 
 {% block content %}
-<!-- <style>
-
-</style> -->
 
 <section id="home">
     <h2 class="text-center">Welcome to Quiz App</h2>
     <div class="container-fluid h-custom">
         <div class="row d-flex justify-content-center align-items-center h-100">
             <div class="col-md-9 col-lg-6 col-xl-5">
-                <img src="{% static 'img/logo.webp' %}" class="img-fluid" alt="Sample image">
+                <img src="{% static 'img/logo.webp' %}" class="img-fluid" alt="Sample image" id="home-img">
             </div>
-            <div class="form-card col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+            <div class="form-card col-md-8 col-lg-6 col-xl-4 offset-xl-1" id="login-sec">
                 <form method="post" action="{% url 'home' %}">
                     {% csrf_token %}
                     <div class="divider d-flex align-items-center my-4">
@@ -191,16 +188,6 @@
         }
     });
 
-    // function SendMessage() {
-    //     var name = document.getElementById("name").value;
-    //     var subject = document.getElementById("subject").value;
-    //     var message = document.getElementById("message").value;
-    //     var email = "quizapp24x7@gmail.com";
-    //     var mailto_link = 'mailto:' + email + "?subject=" + subject + "&body=I am " + name + "%0D%0A%0D%0A" + message + "%0D%0A";
-
-    //     window.open(mailto_link, 'emailWindow')
-    // }
-
     $("#contactForm").submit((e) => {
         e.preventDefault()
         $.ajax({
@@ -210,7 +197,6 @@
             success: function (response) {
                 alert("Message sent successfully")
                 window.location.reload()
-                //window.location.href="https://google.com"
             },
             error: function (err) {
                 alert("Something Error")
