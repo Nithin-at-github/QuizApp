@@ -20,8 +20,7 @@ will be an email verification process to avoid invalid email ids. Let's take a l
    ![forgot_pass](https://user-images.githubusercontent.com/104214308/213702059-ea6a9dfe-5d5f-4f61-b847-684225787d3a.png)
 
 3. #### Register
-   If you are new to the website you can use the register link in the homepage to go to the registration page. You need to fill all the required fields including captcha
-   to proceed.
+   If you are new to the website you can use the register link in the homepage to go to the registration page. You need to fill all the required fields including captcha to proceed.
    
    ![register](https://user-images.githubusercontent.com/104214308/213702662-e31d3fb4-4186-45a9-a052-130954560898.png)
 
@@ -36,7 +35,7 @@ will be an email verification process to avoid invalid email ids. Let's take a l
    ![admin_dash](https://user-images.githubusercontent.com/104214308/213705146-f86baf6d-6412-49b0-bd39-40628c213d65.png)
 
 6. #### Admin view Results
-   The administrator can view results of all quizzes on this page. Admin will be notified whenever new results come. There is an option to download the result. 
+   The administrator can view results of all quizzes on this page. Admin will be notified whenever new results arrive. There is an option to download the result. 
    Admin can also see the submitted answers by checking logs.
    
    ![admin_view_results](https://user-images.githubusercontent.com/104214308/213706536-82a85830-9581-43a6-b3e1-561e29babf73.png)
@@ -65,7 +64,7 @@ will be an email verification process to avoid invalid email ids. Let's take a l
    
    ![quiz_window](https://user-images.githubusercontent.com/104214308/213713747-076415e7-7325-4066-a78f-d58168db625f.png)
 
-9. #### User Check Resulsts
+9. #### User Check Results
    This is a common section to check results. Users can get any results by giving the quiz name and candidate id.
    
    ![user_check_results](https://user-images.githubusercontent.com/104214308/213715063-fbfbe70c-f44d-452f-9d47-7531a3e4467b.png)
@@ -91,8 +90,7 @@ will be an email verification process to avoid invalid email ids. Let's take a l
     ![user_settings](https://user-images.githubusercontent.com/104214308/213721965-c9f03a17-0431-4db6-b174-5c398e3ece59.png)
 
 14. #### View Feedbacks
-    The Feedbacks posted by various users is showm in the homepage which is visible to everyone.But its limited to a number.thus everyone can see all feedbacks in this
-    section.
+    The latest feedbacks posted by various users is shown in the homepage as visible to everyone. There is a see more button to see all feedbacks as follows. 
     
     ![feedbacks](https://user-images.githubusercontent.com/104214308/213722803-51fdef11-6799-45f7-a800-61d5b8798aa9.png)
 
