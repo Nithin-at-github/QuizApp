@@ -2,12 +2,16 @@
 
 ## This is an online quiz website where, users can register themselves and participate in quizzes.
 
-This website is hosted in the following link : http://quizapp2022.pythonanywhere.com/
+This website is hosted at the following link : http://quizapp2022.pythonanywhere.com/
 
 QuizApp is a platform that can host various types of quizzes. Quizzes can have any number of questions, can specify the marks for each questions and questions can 
 carry negative marks, if needed. Also we can specify the time limit for quizzes. Users can register themselves to the website by providing the required details like 
 username, email, password etc. There will be a captcha verification section on pages like registration, password reset etc as an extra layer of security. Later there 
-will be an email verification process to avoid invalid email ids. Let's take a look at the features of this website.
+will be an email verification process to avoid invalid email ids.
+
+### Languages Used : HTML, CSS, JavaScript, Python - Django
+
+Let's take a look at the features of this website.
 
 1. #### Login
    The homepage contains a login section, both users and the administrator can use this section to login to their accounts.
