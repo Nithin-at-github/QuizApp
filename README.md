@@ -2,7 +2,7 @@
 
 ## This is an online quiz website where, users can register themselves and participate in quizzes.
 
-This website is hosted at the following link : http://quizapp2022.pythonanywhere.com/
+This website is hosted at the following link : https://quizapp2022.pythonanywhere.com/
 
 QuizApp is a platform that can host various types of quizzes. Quizzes can have any number of questions, can specify the marks for each questions and questions can 
 carry negative marks, if needed. Also we can specify the time limit for quizzes. Users can register themselves to the website by providing the required details like 
